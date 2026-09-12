@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#b91c1c">
+  <meta name="description" content="Modaxoft Poultry Management System">
+  <title>Modaxoft Poultry</title>
+  <link rel="stylesheet" href="v5-upgrade.css">
+</head>
+<body>
+  <section id="login" aria-label="Login">
+    <div class="login-shell">
+      <aside class="login-brand">
+        <div class="brand-kicker">MODAXOFT VENTURES · POULTRY OPERATIONS</div>
+        <div class="brand-title">Run the farm.<br><span>Know the numbers.</span></div>
+        <p class="brand-copy">A secure operational portal for poultry production, inventory, sales, payroll, accounting, schedules, documents and management reporting.</p>
+        <div class="feature-list">
+          <div class="feature"><b>🐔 Farm Operations</b><small>Flocks, feed, production and daily logs</small></div>
+          <div class="feature"><b>💰 Finance</b><small>Sales, invoices, payroll and accounting</small></div>
+          <div class="feature"><b>🔐 Audit & Security</b><small>Role-based access and activity tracking</small></div>
+          <div class="feature"><b>📅 Coordination</b><small>Tasks, projects, calendar and alerts</small></div>
+        </div>
+      </aside>
+
+      <main class="login-panel">
+        <div class="login-card">
+          <div class="login-logo">MX</div>
+          <h1 id="brandName">Modaxoft Poultry</h1>
+          <p class="sub">Sign in to your farm management portal.</p>
+
+          <form id="loginForm" autocomplete="on" novalidate>
+            <div class="field">
+              <label for="username">Username</label>
+              <div class="input-wrap">
+                <input id="username" name="username" autocomplete="username" placeholder="Enter username" autofocus required>
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="password">Password</label>
+              <div class="input-wrap">
+                <input id="password" name="password" type="password" autocomplete="current-password" placeholder="Enter password" required>
+                <button type="button" class="toggle" id="togglePassword" aria-label="Show password">Show</button>
+              </div>
+            </div>
+
+            <div class="login-actions">
+              <button type="button" class="clear-btn" id="clearLogin">Clear</button>
+              <button type="submit" class="login-btn" id="loginSubmit">Sign in <span>→</span></button>
+            </div>
+            <div id="error" class="login-error" role="alert" hidden></div>
+          </form>
+
+          <div class="login-help">
+            <b>Administrator setup:</b> first-time administrators are created from the Apps Script editor using the supplied setup function. Credentials are never stored in this page.
+          </div>
+        </div>
+      </main>
+    </div>
+  </section>
+
+  <section id="app" hidden>
+    <header class="topbar">
+      <button class="menu" id="menu" type="button" aria-label="Open navigation">☰</button>
+      <div class="brand-mini" id="brandNameTop">Modaxoft Poultry</div>
+      <div class="user-pill" id="user"></div>
+      <button id="logout" type="button" class="logout-btn">Logout</button>
+    </header>
+
+    <div class="layout">
+      <aside id="sidebar" class="sidebar" aria-label="Main navigation">
+        <div class="sidebar-close-row">
+          <button id="closeSidebar" class="no-print" type="button" aria-label="Close navigation">✕</button>
+        </div>
+        <nav id="nav"></nav>
+      </aside>
+
+      <div id="sidebarBackdrop" class="sidebar-backdrop"></div>
+
+      <main class="main">
+        <div id="content"></div>
+      </main>
+    </div>
+  </section>
+
+  <div id="modal" class="modal" hidden role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-box">
+      <button id="close" class="modal-close no-print" type="button" aria-label="Close dialog">✕</button>
+      <div id="modalContent"></div>
+    </div>
+  </div>
+
+  <div id="toast" role="status" aria-live="polite"></div>
+
+  <script src="app.js" defer></script>
+</body>
+</html>
