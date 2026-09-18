@@ -6,7 +6,634 @@
   <meta name="theme-color" content="#b91c1c">
   <meta name="description" content="Modaxoft Poultry Management System">
   <title>Modaxoft Poultry</title>
-  <link rel="stylesheet" href="v5-upgrade.css">
+  <style>
+/* MODAXOFT POULTRY MANAGEMENT SYSTEM - Frontend v5.1 */
+:root{
+  --brand:#b91c1c;
+  --brand-dark:#7f1d1d;
+  --ink:#172033;
+  --muted:#6b7280;
+  --line:#e5e7eb;
+  --bg:#f3f4f6;
+  --panel:#fff;
+  --sidebar:#090909;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink)}
+body{overflow-x:hidden}
+[hidden],.hidden{display:none!important}
+button,input,select,textarea{font:inherit}
+button{border:1px solid transparent;border-radius:10px;padding:10px 14px;background:var(--brand);color:#fff;font-weight:700;cursor:pointer;transition:.15s}
+button:hover{filter:brightness(.93)}
+button:disabled{opacity:.6;cursor:not-allowed}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid rgba(185,28,28,.22);outline-offset:2px}
+button.secondary{background:#374151;color:#fff}
+button.danger{background:#7f1d1d;margin-left:6px}
+.button{display:inline-flex;align-items:center;justify-content:center;border:1px solid #d1d5db;background:#fff;color:inherit;border-radius:10px;padding:9px 13px;text-decoration:none;cursor:pointer}
+.button:hover{background:#f9fafb}
+.primary{background:var(--brand);color:#fff;border-color:var(--brand)}
+
+.login-shell{min-height:100vh;display:grid;grid-template-columns:minmax(360px,1.05fr) minmax(420px,.95fr);background:#0b0b0d}
+.login-brand{position:relative;overflow:hidden;padding:clamp(30px,6vw,80px);display:flex;flex-direction:column;justify-content:center;color:#fff;background:radial-gradient(circle at 20% 20%,rgba(185,28,28,.55),transparent 34%),linear-gradient(145deg,#111113,#050506)}
+.login-brand:after{content:"";position:absolute;width:520px;height:520px;border:1px solid rgba(255,255,255,.09);border-radius:50%;right:-250px;bottom:-260px;box-shadow:0 0 0 90px rgba(185,28,28,.04),0 0 0 180px rgba(255,255,255,.025)}
+.brand-kicker{letter-spacing:.18em;text-transform:uppercase;font-size:12px;font-weight:800;color:#fca5a5}
+.brand-title{font-size:clamp(38px,5vw,68px);line-height:.95;margin:16px 0;font-weight:900;max-width:650px}
+.brand-title span{color:#ef4444}
+.brand-copy{max-width:580px;color:#d1d5db;font-size:16px;line-height:1.7}
+.feature-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:34px;max-width:600px}
+.feature{border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);border-radius:16px;padding:14px}
+.feature b{display:block;font-size:14px}
+.feature small{color:#9ca3af}
+.login-panel{background:#fff;display:flex;align-items:center;justify-content:center;padding:28px}
+.login-card{width:min(470px,100%);padding:clamp(26px,5vw,48px);border:1px solid #eee;border-radius:28px;box-shadow:0 25px 80px rgba(0,0,0,.12)}
+.login-logo{width:62px;height:62px;border-radius:18px;background:linear-gradient(145deg,var(--brand),#111);display:grid;place-items:center;color:#fff;font-weight:950;font-size:28px;box-shadow:0 12px 30px rgba(185,28,28,.25)}
+.login-card h1{margin:24px 0 8px;font-size:30px}
+.login-card .sub{margin:0 0 26px;color:var(--muted);line-height:1.6}
+.field{margin:15px 0}
+.field label{display:block;font-weight:750;font-size:13px;margin-bottom:7px}
+.input-wrap{position:relative}
+.input-wrap input{width:100%;padding:14px 46px 14px 14px;border:1px solid #d1d5db;border-radius:13px;outline:none;transition:.2s}
+.input-wrap input:focus{border-color:var(--brand);box-shadow:0 0 0 4px rgba(185,28,28,.1)}
+.toggle{position:absolute;right:7px;top:7px;border:0;background:transparent;color:#6b7280;padding:7px;border-radius:9px;cursor:pointer}
+.toggle:hover{background:#f3f4f6}
+.login-actions{display:flex;gap:10px;margin-top:20px}
+.login-btn{flex:1;border:0;border-radius:13px;padding:14px 18px;background:var(--brand);color:#fff;font-weight:850;cursor:pointer;box-shadow:0 10px 24px rgba(185,28,28,.22)}
+.clear-btn{border:1px solid #d1d5db;border-radius:13px;padding:14px 17px;background:#fff;color:#111;cursor:pointer}
+.login-error{margin-top:15px;padding:12px 14px;border-radius:12px;background:#fef2f2;border:1px solid #fecaca;color:#991b1b;font-size:13px;line-height:1.5}
+.login-help{margin-top:24px;padding-top:18px;border-top:1px solid #eee;color:#6b7280;font-size:12px;line-height:1.6}
+.spinner{display:inline-block;width:15px;height:15px;border:2px solid rgba(255,255,255,.45);border-top-color:#fff;border-radius:50%;vertical-align:-2px;margin-right:7px;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+#app{min-height:100vh}
+.topbar{height:64px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:14px;padding:0 18px;position:sticky;top:0;z-index:100}
+.brand-mini{font-weight:900}
+.user-pill{margin-left:auto;font-size:13px;color:#374151}
+.logout-btn{background:#111827}
+.layout{display:grid;grid-template-columns:250px 1fr;min-height:calc(100vh - 64px)}
+.sidebar{background:var(--sidebar);color:#fff;padding:16px;position:sticky;top:64px;height:calc(100vh - 64px);overflow:auto;z-index:300}
+.sidebar-close-row{display:flex;justify-content:flex-end;margin-bottom:8px}
+.sidebar-close-row button{background:#222;color:#fff;border-color:#333}
+#nav{padding-top:4px}
+.side-link{width:100%;display:flex;gap:10px;align-items:center;padding:11px 12px;border:0;border-radius:10px;background:transparent;color:#d1d5db;text-align:left;cursor:pointer;margin:3px 0}
+.side-link:hover,.side-link.active{background:var(--brand);color:#fff}
+.main{padding:22px;min-width:0}
+.menu{display:none;background:#111827}
+.sidebar-backdrop{display:none;position:fixed;inset:64px 0 0;background:rgba(0,0,0,.45);z-index:250}
+
+.toolbar,.page-title{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:18px}
+.toolbar h1,.page-title h1{margin:0;font-size:24px}
+.actions{display:flex;gap:8px}
+.muted{color:var(--muted);margin:4px 0}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin:15px 0}
+.card,.panel{background:#fff;border:1px solid var(--line);border-radius:15px;box-shadow:0 5px 20px rgba(0,0,0,.04)}
+.card{padding:17px;position:relative}
+.card-icon{font-size:22px;float:right}
+.card small{color:var(--muted)}
+.value{font-size:24px;font-weight:850;margin-top:7px}
+.chart-grid{display:grid;grid-template-columns:2fr 1fr;gap:15px}
+.panel{padding:17px;margin-bottom:15px}
+.panel-title,.ledger-head{display:flex;justify-content:space-between;gap:10px;align-items:center}
+.panel-title h2,.ledger-head h2{margin:0 0 10px;font-size:17px}
+.panel-title span{font-size:12px;color:var(--muted)}
+.mini-stat{display:flex;justify-content:space-between;padding:13px 0;border-bottom:1px solid #eee}
+.wide{width:100%;margin-top:10px}
+.tablewrap{overflow:auto}
+table{width:100%;border-collapse:collapse;background:#fff}
+th,td{padding:10px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap;font-size:13px}
+th{background:#f9fafb;font-size:12px;color:#4b5563}
+tfoot th{background:#f3f4f6}
+.search{max-width:380px}
+.filters{display:grid;grid-template-columns:2fr 1fr 1fr auto;gap:10px;align-items:end}
+.filters label{font-size:12px;font-weight:700}
+.filters input,.filters select{margin-top:5px}
+input,textarea,select{width:100%;padding:11px;border:1px solid #d1d5db;border-radius:8px;background:#fff;font:inherit}
+textarea{min-height:90px;resize:vertical}
+.ledger-total{text-align:right}
+.ledger-total b{font-size:20px}
+.empty{text-align:center;color:var(--muted);padding:25px}
+.notify{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px;border-bottom:1px solid var(--line)}
+.notify p{margin:6px 0}
+.notify small{color:var(--muted)}
+.balance-banner{display:flex;justify-content:space-between;gap:12px;padding:14px;border-radius:10px;margin-bottom:15px}
+.balance-banner.ok{background:#ecfdf5;color:#166534}
+.balance-banner.bad{background:#fef2f2;color:#991b1b}
+.error-panel{border-left:4px solid var(--brand);border-color:#fecaca}
+
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:500;display:grid;place-items:center;padding:18px}
+.modal-box{width:min(900px,100%);max-height:90vh;overflow:auto;background:#fff;border-radius:18px;padding:22px}
+.modal-close{float:right;background:#eee;color:#111;border-radius:50%;font-size:22px;width:36px;height:36px;padding:0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:13px}
+.grid label{display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:700}
+.grid textarea{min-height:90px}
+.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:15px}
+#toast{position:fixed;right:20px;bottom:20px;background:#111827;color:#fff;padding:12px 16px;border-radius:10px;z-index:10000;opacity:0;transform:translateY(10px);pointer-events:none;transition:.2s;box-shadow:0 10px 30px rgba(0,0,0,.2)}
+#toast.show{opacity:1;transform:none}
+.notification-badge{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;padding:0 6px;margin-left:6px;border-radius:999px;background:var(--brand);color:#fff;font-size:11px;font-weight:800}
+.notification-badge.pulse{animation:badgePulse 1.4s infinite}
+.notification-ticker{position:fixed;top:76px;right:16px;z-index:9999;border:0;border-radius:999px;padding:11px 16px;background:var(--brand);color:#fff;box-shadow:0 8px 30px rgba(0,0,0,.22);cursor:pointer;font-weight:700}
+.notification-ticker.notify-bounce{animation:notifyBounce .55s ease}
+@keyframes badgePulse{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
+@keyframes notifyBounce{0%{transform:translateY(-16px);opacity:.2}60%{transform:translateY(4px);opacity:1}100%{transform:translateY(0)}}
+.calendar-item{padding:14px;border-left:4px solid var(--brand);margin:10px 0;border-radius:8px;background:#fafafa}
+.calendar-item span,.calendar-item small{display:block;margin-top:5px}
+.report-head{display:none}
+.report-mark img{max-width:70px;max-height:70px;object-fit:contain}
+
+@media(max-width:900px){
+  .login-shell{grid-template-columns:1fr}
+  .login-brand{display:none}
+  .layout{grid-template-columns:1fr}
+  .sidebar{position:fixed;left:-280px;top:64px;width:260px;height:calc(100vh - 64px);transition:left .2s}
+  .sidebar.open{left:0}
+  .menu{display:inline-flex}
+  .chart-grid{grid-template-columns:1fr}
+  .filters{grid-template-columns:1fr 1fr}
+  .filters button{grid-column:1/-1}
+  .main{padding:14px}
+  .toolbar,.page-title{align-items:flex-start;flex-direction:column}
+}
+@media(max-width:700px){
+  .sidebar{width:84vw;max-width:300px;box-shadow:15px 0 35px rgba(0,0,0,.32)}
+  .sidebar-backdrop.show{display:block}
+  .toolbar{flex-wrap:wrap}
+  .actions{width:100%}
+  .actions button,.actions .button{flex:1}
+  .user-pill{display:none}
+  .grid{grid-template-columns:1fr}
+  .filters{grid-template-columns:1fr}
+  .filters button{grid-column:auto}
+  .cards{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .card{padding:14px}
+}
+@media(max-width:520px){
+  .login-panel{padding:12px}
+  .login-card{padding:24px;border-radius:20px}
+  .feature-list{grid-template-columns:1fr}
+  .topbar{padding:0 10px}
+  .brand-mini{font-size:14px}
+  .cards{grid-template-columns:1fr 1fr}
+  .notification-ticker{left:10px;right:10px;top:72px;text-align:center}
+}
+@media print{
+  body{background:#fff}
+  .sidebar,.topbar,.toolbar,.no-print,#modal,#toast,.notification-ticker{display:none!important}
+  .layout{display:block}
+  .main{padding:0}
+  .report-head{display:grid!important;grid-template-columns:1fr auto;align-items:center;border-bottom:3px solid #111;padding-bottom:10px;margin-bottom:15px}
+  .report-head h1{margin:0;font-size:22px}
+  .report-head p{margin:3px 0;font-size:11px}
+  .report-mark{font-size:42px}
+  .panel,.card{box-shadow:none;border:1px solid #ddd}
+  .tablewrap{overflow:visible}
+  table{font-size:10px}
+  th,td{padding:5px;white-space:normal}
+}
+/* =========================================================
+   MODAXOFT SIDEBAR - FIXED / ALIGNED / NON-OVERLAPPING
+   ========================================================= */
+
+.sidebar{
+  background:var(--sidebar);
+  color:#fff;
+  padding:16px 12px;
+  position:sticky;
+  top:64px;
+  height:calc(100vh - 64px);
+  overflow-y:auto;
+  overflow-x:hidden;
+  z-index:300;
+
+  /* Prevent scrollbar/layout shifting */
+  scrollbar-width:thin;
+  scrollbar-color:#3f3f46 transparent;
+}
+
+/* Webkit scrollbar */
+.sidebar::-webkit-scrollbar{
+  width:6px;
+}
+
+.sidebar::-webkit-scrollbar-track{
+  background:transparent;
+}
+
+.sidebar::-webkit-scrollbar-thumb{
+  background:#3f3f46;
+  border-radius:10px;
+}
+
+/* Sidebar close button row */
+.sidebar-close-row{
+  display:flex;
+  justify-content:flex-end;
+  align-items:center;
+  width:100%;
+  margin:0 0 12px;
+  padding:0;
+}
+
+.sidebar-close-row button{
+  width:38px;
+  min-width:38px;
+  height:38px;
+  min-height:38px;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  padding:0;
+  margin:0;
+
+  background:#222;
+  color:#fff;
+  border:1px solid #333;
+  border-radius:9px;
+
+  flex-shrink:0;
+}
+
+/* Navigation container */
+#nav{
+  width:100%;
+  display:flex;
+  flex-direction:column;
+  align-items:stretch;
+  gap:4px;
+  padding:4px 0 16px;
+}
+
+/* =========================================================
+   SIDEBAR BUTTONS
+   ========================================================= */
+
+.side-link{
+  width:100%;
+  min-width:0;
+  height:44px;
+  min-height:44px;
+  max-height:44px;
+
+  display:flex;
+  align-items:center;
+  gap:11px;
+
+  padding:0 12px;
+  margin:0;
+
+  border:1px solid transparent;
+  border-radius:10px;
+
+  background:transparent;
+  color:#d1d5db;
+
+  text-align:left;
+  cursor:pointer;
+
+  font-size:14px;
+  font-weight:700;
+  line-height:1;
+
+  white-space:nowrap;
+  overflow:hidden;
+
+  transition:
+    background .15s ease,
+    color .15s ease,
+    transform .15s ease,
+    border-color .15s ease;
+
+  flex-shrink:0;
+}
+
+/* Sidebar icons */
+.side-link i,
+.side-link svg,
+.side-link .icon,
+.side-link [class*="icon"]{
+  width:20px;
+  min-width:20px;
+  max-width:20px;
+
+  height:20px;
+  min-height:20px;
+  max-height:20px;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  flex-shrink:0;
+
+  font-size:17px;
+  line-height:1;
+}
+
+/* Button text */
+.side-link span,
+.side-link .label{
+  min-width:0;
+  flex:1;
+
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+
+  line-height:44px;
+}
+
+/* Notification badges inside sidebar */
+.side-link .notification-badge,
+.side-link .badge{
+  flex:0 0 auto;
+
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+
+  min-width:20px;
+  width:auto;
+  height:20px;
+  min-height:20px;
+
+  padding:0 6px;
+  margin:0 0 0 auto;
+
+  border-radius:999px;
+
+  font-size:11px;
+  font-weight:800;
+  line-height:20px;
+}
+
+/* Hover */
+.side-link:hover{
+  background:#242424;
+  color:#fff;
+  border-color:#333;
+}
+
+/* Active */
+.side-link.active{
+  background:var(--brand);
+  color:#fff;
+  border-color:var(--brand);
+}
+
+/* Prevent buttons from moving and causing overlap */
+.side-link:hover,
+.side-link.active{
+  transform:none;
+}
+
+/* =========================================================
+   SIDEBAR GROUPS / DROPDOWNS
+   ========================================================= */
+
+.sidebar-section{
+  width:100%;
+  margin:0;
+  padding:0;
+}
+
+.sidebar-section-title{
+  width:100%;
+  height:30px;
+
+  display:flex;
+  align-items:center;
+
+  padding:0 12px;
+  margin:10px 0 4px;
+
+  color:#6b7280;
+  font-size:10px;
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+
+  white-space:nowrap;
+  overflow:hidden;
+}
+
+/* If navigation uses lists */
+#nav ul,
+#nav ol{
+  width:100%;
+  margin:0;
+  padding:0;
+  list-style:none;
+}
+
+#nav li{
+  width:100%;
+  margin:0;
+  padding:0;
+}
+
+/* =========================================================
+   SIDEBAR SUBMENU
+   ========================================================= */
+
+.side-submenu{
+  width:100%;
+  margin:2px 0 4px;
+  padding:0 0 0 12px;
+
+  display:flex;
+  flex-direction:column;
+  gap:3px;
+}
+
+.side-submenu .side-link{
+  height:40px;
+  min-height:40px;
+  max-height:40px;
+
+  font-size:13px;
+}
+
+.side-submenu .side-link span,
+.side-submenu .side-link .label{
+  line-height:40px;
+}
+
+/* =========================================================
+   MOBILE SIDEBAR
+   ========================================================= */
+
+@media(max-width:900px){
+
+  .sidebar{
+    position:fixed;
+    left:-280px;
+    top:64px;
+
+    width:260px;
+    height:calc(100vh - 64px);
+
+    padding:16px 12px;
+
+    overflow-y:auto;
+    overflow-x:hidden;
+
+    transition:left .2s ease;
+
+    box-shadow:none;
+  }
+
+  .sidebar.open{
+    left:0;
+    box-shadow:15px 0 35px rgba(0,0,0,.32);
+  }
+
+  #nav{
+    gap:4px;
+  }
+
+  .side-link{
+    height:44px;
+    min-height:44px;
+    max-height:44px;
+  }
+}
+
+/* Larger mobile sidebar */
+@media(max-width:700px){
+
+  .sidebar{
+    width:84vw;
+    max-width:300px;
+
+    padding:14px 12px;
+  }
+
+  .side-link{
+    height:46px;
+    min-height:46px;
+    max-height:46px;
+
+    padding:0 13px;
+
+    font-size:14px;
+  }
+
+  .side-link span,
+  .side-link .label{
+    line-height:46px;
+  }
+}
+
+/* Small phones */
+@media(max-width:520px){
+
+  .sidebar{
+    width:86vw;
+    max-width:290px;
+    padding:12px 10px;
+  }
+
+  .sidebar-close-row{
+    margin-bottom:10px;
+  }
+
+  .sidebar-close-row button{
+    width:36px;
+    min-width:36px;
+    height:36px;
+    min-height:36px;
+  }
+
+  .side-link{
+    height:44px;
+    min-height:44px;
+    max-height:44px;
+
+    padding:0 11px;
+    gap:10px;
+
+    font-size:13px;
+  }
+
+  .side-link span,
+  .side-link .label{
+    line-height:44px;
+  }
+
+  .side-link i,
+  .side-link svg,
+  .side-link .icon,
+  .side-link [class*="icon"]{
+    width:19px;
+    min-width:19px;
+    max-width:19px;
+
+    height:19px;
+    min-height:19px;
+    max-height:19px;
+  }
+}
+
+/* =========================================================
+   SIDEBAR BACKDROP
+   ========================================================= */
+
+.sidebar-backdrop{
+  display:none;
+
+  position:fixed;
+  inset:64px 0 0;
+
+  background:rgba(0,0,0,.45);
+
+  z-index:250;
+}
+
+.sidebar-backdrop.show{
+  display:block;
+}
+
+/* =========================================================
+   IMPORTANT: PREVENT GLOBAL BUTTON RULES FROM RESIZING
+   SIDEBAR BUTTONS
+   ========================================================= */
+
+.sidebar .side-link{
+  padding-top:0;
+  padding-bottom:0;
+  margin-top:0;
+  margin-bottom:0;
+  box-shadow:none;
+}
+
+.sidebar .side-link:hover{
+  filter:none;
+}
+
+.sidebar .side-link:focus{
+  outline:3px solid rgba(239,68,68,.25);
+  outline-offset:-2px;
+}
+
+/* Prevent any nested buttons from breaking the layout */
+.sidebar button{
+  max-width:100%;
+}
+
+/* =========================================================
+   SIDEBAR OPEN/CLOSE SAFETY
+   ========================================================= */
+
+body.sidebar-open{
+  overflow:hidden;
+}
+
+@media(min-width:901px){
+  body.sidebar-open{
+    overflow:auto;
+  }
+}
+  </style>
 </head>
 <body>
   <section id="login" aria-label="Login">
@@ -25,7 +652,7 @@
 
       <main class="login-panel">
         <div class="login-card">
-       <h1 id="brandName">Modaxoft Poultry</h1>
+          <h1 id="brandName">Modaxoft Poultry</h1>
           <p class="sub">Sign in to your farm management portal.</p>
 
           <form id="loginForm" autocomplete="on" novalidate>
@@ -50,8 +677,7 @@
             </div>
             <div id="error" class="login-error" role="alert" hidden></div>
           </form>
-
-          
+        </div>
       </main>
     </div>
   </section>
@@ -89,6 +715,5794 @@
 
   <div id="toast" role="status" aria-live="polite"></div>
 
-  <script src="app.js" defer></script>
+  <script>
+/* MODAXOFT POULTRY MANAGEMENT SYSTEM - Frontend v5.1 */
+
+const API_URL = 'https://script.google.com/macros/s/AKfycbxDVZ8fFhJxX5XasJLkHbe7VOmF5xtHTSnbeSBZYyBM099h24HtLstVWynEbvt4zpY5Og/exec';
+
+const $ = id => document.getElementById(id);
+
+let S = null;
+let BIZ = null;
+let page = 'Dashboard';
+let timer = null;
+let LINKCACHE = {};
+
+try {
+  S = JSON.parse(localStorage.getItem('mp_v5') || 'null');
+} catch (e) {
+  localStorage.removeItem('mp_v5');
+  S = null;
+}
+
+
+/* =========================================================
+   TABLE / DATABASE DEFINITIONS
+========================================================= */
+
+const F = {
+  Users: [
+    'username',
+    'password',
+    'name',
+    'role',
+    'farm_id',
+    'active'
+  ],
+
+  Farms: [
+    'farm_code',
+    'name',
+    'location',
+    'manager_user_id',
+    'active'
+  ],
+
+  Flocks: [
+    'batch',
+    'breed',
+    'date_placed',
+    'birds',
+    'status',
+    'notes'
+  ],
+
+  Daily_Log: [
+    'flock_id',
+    'date',
+    'deaths',
+    'culls',
+    'feed_kg',
+    'eggs',
+    'notes'
+  ],
+
+  Feed: [
+    'name',
+    'sku',
+    'quantity',
+    'unit',
+    'unit_cost',
+    'minimum_stock',
+    'stock_value',
+    'supplier',
+    'location',
+    'active'
+  ],
+
+  Customers: [
+    'name',
+    'phone',
+    'email',
+    'location'
+  ],
+
+  Products: [
+    'sku',
+    'name',
+    'category',
+    'unit',
+    'price',
+    'cost_price',
+    'quantity',
+    'minimum_stock',
+    'active',
+    'description'
+  ],
+
+  Sales: [
+    'invoice',
+    'date',
+    'customer_id',
+    'product_id',
+    'quantity',
+    'unit_price',
+    'total',
+    'payment_status',
+    'status',
+    'payment_reference'
+  ],
+
+  Expenses: [
+    'date',
+    'category',
+    'description',
+    'amount',
+    'payment_method',
+    'reference'
+  ],
+
+  Employees: [
+    'employee_no',
+    'name',
+    'phone',
+    'department',
+    'job_title',
+    'basic_salary',
+    'status'
+  ],
+
+  Attendance: [
+    'employee_id',
+    'date',
+    'status',
+    'notes'
+  ],
+
+  Payroll: [
+    'period',
+    'employee_id',
+    'basic_salary',
+    'allowances',
+    'deductions',
+    'net_pay',
+    'status',
+    'payment_reference'
+  ],
+
+  Notifications: [
+    'recipient_type',
+    'recipient_user_id',
+    'title',
+    'message',
+    'priority',
+    'status'
+  ],
+
+  Service_Requests: [
+    'request_no',
+    'title',
+    'description',
+    'category',
+    'priority',
+    'status',
+    'assigned_to',
+    'response'
+  ],
+
+  Chart_of_Accounts: [
+    'code',
+    'account_name',
+    'type',
+    'subtype',
+    'normal_balance',
+    'active',
+    'description'
+  ],
+
+  Journal: [
+    'date',
+    'reference',
+    'account_code',
+    'description',
+    'debit',
+    'credit',
+    'source',
+    'source_id'
+  ],
+
+  Shared_Files: [
+    'name',
+    'description',
+    'url',
+    'category',
+    'active'
+  ],
+
+  Management_Files: [
+    'name',
+    'description',
+    'url',
+    'category',
+    'active'
+  ],
+
+  Calendar: [
+    'title',
+    'description',
+    'type',
+    'start_at',
+    'end_at',
+    'all_day',
+    'priority',
+    'assigned_to',
+    'status',
+    'location'
+  ],
+
+  Tasks: [
+    'task_no',
+    'title',
+    'description',
+    'category',
+    'priority',
+    'due_date',
+    'assigned_to',
+    'status',
+    'progress'
+  ],
+
+  Payment_Transactions: [
+    'reference',
+    'invoice',
+    'amount',
+    'currency',
+    'channel',
+    'status',
+    'paid_at',
+    'customer_email'
+  ],
+
+  Audit_Log: [
+    'timestamp',
+    'username',
+    'action',
+    'table_name',
+    'record_id',
+    'status',
+    'message',
+    'details'
+  ]
+};
+
+
+/* =========================================================
+   NAVIGATION
+========================================================= */
+
+const P = [
+  'Dashboard',
+  ...Object.keys(F).filter(
+    x => !['Payment_Transactions', 'Audit_Log'].includes(x)
+  ),
+  'Ledger',
+  'Trial_Balance',
+  'Invoices',
+  'My_Activity',
+  'Audit_Log',
+  'Settings'
+];
+
+
+/* =========================================================
+   RELATIONSHIPS
+========================================================= */
+
+const LINK = {
+  Daily_Log: {
+    flock_id: 1
+  },
+
+  Sales: {
+    customer_id: 1,
+    product_id: 1
+  },
+
+  Attendance: {
+    employee_id: 1
+  },
+
+  Payroll: {
+    employee_id: 1
+  },
+
+  Service_Requests: {
+    assigned_to: 1
+  },
+
+  Notifications: {
+    recipient_user_id: 1
+  },
+
+  Calendar: {
+    assigned_to: 1
+  },
+
+  Tasks: {
+    assigned_to: 1
+  },
+
+  Journal: {
+    account_code: 1
+  },
+
+  Users: {
+    farm_id: 1
+  },
+
+  Farms: {
+    manager_user_id: 1
+  }
+};
+
+
+/* =========================================================
+   API
+========================================================= */
+
+async function api(action, data = {}, auth = true) {
+
+  const q = {
+    action,
+    ...data
+  };
+
+  if (auth && S) {
+    q.token = S.token;
+  }
+
+  let response;
+
+  try {
+
+    response = await fetch(API_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'text/plain;charset=utf-8'
+      },
+      body: JSON.stringify(q)
+    });
+
+  } catch (e) {
+
+    throw new Error(
+      'Cannot reach the Google Apps Script backend. Check API_URL and deployment access.'
+    );
+
+  }
+
+  let json;
+
+  try {
+
+    json = await response.json();
+
+  } catch (e) {
+
+    throw new Error(
+      'Backend returned an invalid response.'
+    );
+
+  }
+
+  if (!json.ok) {
+    throw new Error(
+      json.error || 'Operation failed'
+    );
+  }
+
+  return json.data;
+}
+
+
+/* =========================================================
+   ROLE / PERMISSIONS
+========================================================= */
+
+function roleAllowed(name) {
+
+  const r = S?.user?.role;
+
+  if (r === 'ADMIN') {
+    return true;
+  }
+
+  if (name === 'Audit_Log') {
+    return false;
+  }
+
+  if (name === 'Settings') {
+    return r === 'ADMIN';
+  }
+
+  if (name === 'Farms') {
+    return r === 'ADMIN' || r === 'MANAGER';
+  }
+
+  if (name === 'Ledger' || name === 'Trial_Balance') {
+    return r === 'ACCOUNTANT' || r === 'MANAGER';
+  }
+
+  if (name === 'Invoices' || name === 'My_Activity') {
+    return true;
+  }
+
+  if (name === 'Management_Files') {
+    return r === 'MANAGER' || r === 'ACCOUNTANT';
+  }
+
+  return (
+    (
+      [
+        'Dashboard',
+        'Flocks',
+        'Daily_Log',
+        'Feed',
+        'Customers',
+        'Products',
+        'Sales',
+        'Notifications',
+        'Service_Requests',
+        'Shared_Files',
+        'Calendar',
+        'Tasks'
+      ].includes(name)
+      && r === 'FARM_STAFF'
+    )
+    ||
+    (
+      [
+        'Dashboard',
+        'Customers',
+        'Products',
+        'Sales',
+        'Expenses',
+        'Payroll',
+        'Notifications',
+        'Service_Requests',
+        'Chart_of_Accounts',
+        'Journal',
+        'Shared_Files',
+        'Calendar',
+        'Tasks',
+        'Invoices',
+        'My_Activity'
+      ].includes(name)
+      && r === 'ACCOUNTANT'
+    )
+    ||
+    (
+      [
+        'Dashboard',
+        'Employees',
+        'Attendance',
+        'Payroll',
+        'Notifications',
+        'Service_Requests',
+        'Shared_Files',
+        'Calendar',
+        'Tasks',
+        'My_Activity'
+      ].includes(name)
+      && r === 'HR'
+    )
+    ||
+    (
+      [
+        'Dashboard',
+        'Flocks',
+        'Daily_Log',
+        'Feed',
+        'Customers',
+        'Products',
+        'Sales',
+        'Expenses',
+        'Employees',
+        'Attendance',
+        'Payroll',
+        'Notifications',
+        'Service_Requests',
+        'Chart_of_Accounts',
+        'Journal',
+        'Shared_Files',
+        'Management_Files',
+        'Calendar',
+        'Tasks',
+        'Invoices',
+        'My_Activity'
+      ].includes(name)
+      && r === 'MANAGER'
+    )
+  );
+}
+
+
+function visiblePages() {
+  return P.filter(roleAllowed);
+}
+
+
+/* =========================================================
+   LOGIN
+========================================================= */
+
+function setLoginBusy(busy) {
+
+  const b = $('loginSubmit');
+
+  if (b) {
+
+    b.disabled = busy;
+
+    b.innerHTML = busy
+      ? '<span class="spinner"></span> Signing in…'
+      : 'Sign in <span>→</span>';
+  }
+
+  if ($('username')) {
+    $('username').disabled = busy;
+  }
+
+  if ($('password')) {
+    $('password').disabled = busy;
+  }
+}
+
+
+if ($('loginForm')) {
+
+  $('loginForm').onsubmit = async e => {
+
+    e.preventDefault();
+
+    const err = $('error');
+
+    if (err) {
+      err.textContent = '';
+      err.hidden = true;
+    }
+
+    const username = $('username').value.trim();
+    const password = $('password').value;
+
+    if (!username || !password) {
+
+      if (err) {
+        err.textContent =
+          'Enter your username and password.';
+        err.hidden = false;
+      }
+
+      return;
+    }
+
+    setLoginBusy(true);
+
+    try {
+
+      S = await api(
+        'login',
+        {
+          username,
+          password
+        },
+        false
+      );
+
+      localStorage.setItem(
+        'mp_v5',
+        JSON.stringify(S)
+      );
+
+      await boot();
+
+    } catch (ex) {
+
+      S = null;
+
+      localStorage.removeItem('mp_v5');
+
+      if (err) {
+        err.textContent =
+          ex.message || 'Login failed.';
+        err.hidden = false;
+      }
+
+      const p = $('password');
+
+      if (p) {
+        p.focus();
+        p.select();
+      }
+
+    } finally {
+
+      setLoginBusy(false);
+
+    }
+  };
+}
+
+
+/* =========================================================
+   APPLICATION BOOT
+========================================================= */
+
+async function boot() {
+
+  clearInterval(timer);
+
+  if (!S) {
+
+    if ($('login')) {
+      $('login').hidden = false;
+    }
+
+    if ($('app')) {
+      $('app').hidden = true;
+    }
+
+    return;
+  }
+
+  try {
+
+    BIZ = await api(
+      'publicSettings',
+      {},
+      false
+    );
+
+    await api('myProfile');
+
+    if ($('login')) {
+      $('login').hidden = true;
+    }
+
+    if ($('app')) {
+      $('app').hidden = false;
+    }
+
+    if ($('user')) {
+
+      $('user').textContent =
+        (S.user.name || S.user.username)
+        + ' · '
+        + S.user.role;
+    }
+
+    applyBrand();
+
+    nav();
+
+    await show('Dashboard');
+
+    timer = setInterval(() => {
+
+      if (
+        !document.hidden &&
+        $('modal') &&
+        $('modal').hidden
+      ) {
+
+        refreshNotificationBadge();
+
+        show(page);
+
+      }
+
+    }, 20000);
+
+  } catch (err) {
+
+    localStorage.removeItem('mp_v5');
+
+    S = null;
+
+    if ($('error')) {
+
+      $('error').textContent =
+        err.message ||
+        'Session expired. Please sign in again.';
+
+      $('error').hidden = false;
+    }
+
+    if ($('login')) {
+      $('login').hidden = false;
+    }
+
+    if ($('app')) {
+      $('app').hidden = true;
+    }
+  }
+}
+
+
+/* =========================================================
+   BRANDING
+========================================================= */
+
+function applyBrand() {
+
+  document.title =
+    BIZ?.portal_name ||
+    BIZ?.business_name ||
+    'Modaxoft Poultry';
+
+  document.documentElement.style.setProperty(
+    '--brand',
+    BIZ?.theme_color || '#b91c1c'
+  );
+
+  if ($('brandName')) {
+
+    $('brandName').textContent =
+      BIZ?.portal_name ||
+      BIZ?.business_name ||
+      'Modaxoft Poultry';
+  }
+
+  if ($('brandNameTop')) {
+
+    $('brandNameTop').textContent =
+      BIZ?.portal_name ||
+      BIZ?.business_name ||
+      'Modaxoft Poultry';
+  }
+}
+
+
+/* =========================================================
+   NAVIGATION
+========================================================= */
+
+function nav() {
+
+  if (!$('nav')) return;
+
+  $('nav').replaceChildren(
+
+    ...visiblePages().map(name => {
+
+      const b =
+        document.createElement('button');
+
+      b.textContent =
+        icon(name) + ' ' + label(name);
+
+      b.className =
+        name === page ? 'active' : '';
+
+      b.onclick = () => {
+
+        closeSidebar();
+
+        show(name);
+
+      };
+
+      return b;
+
+    })
+  );
+}
+
+
+function label(x) {
+  return String(x).replaceAll('_', ' ');
+}
+
+
+function icon(x) {
+
+  return ({
+    Dashboard: '⌂',
+    Flocks: '🐔',
+    Daily_Log: '📋',
+    Feed: '🌾',
+    Customers: '👥',
+    Products: '📦',
+    Sales: '💰',
+    Expenses: '💸',
+    Employees: '👤',
+    Attendance: '🕘',
+    Payroll: '🧾',
+    Notifications: '🔔',
+    Service_Requests: '🛠',
+    Chart_of_Accounts: '📚',
+    Journal: '✍',
+    Ledger: '📒',
+    Trial_Balance: '⚖',
+    Shared_Files: '📁',
+    Management_Files: '🗂',
+    Calendar: '📅',
+    Tasks: '✅',
+    Invoices: '🧾',
+    My_Activity: '🧑‍💻',
+    Audit_Log: '🔐',
+    Settings: '⚙',
+    Farms: '🏡'
+  })[x] || '•';
+}
+
+
+/* =========================================================
+   HELPERS
+========================================================= */
+
+function reportHeader(title) {
+
+  return `
+    <div class="report-head">
+
+      <div>
+
+        <h1>
+          ${esc(BIZ?.business_name || 'Modaxoft Poultry')}
+        </h1>
+
+        <p>
+          ${esc(BIZ?.address || '')}
+          ${BIZ?.email ? ' | ' + esc(BIZ.email) : ''}
+          ${BIZ?.phone ? ' | ' + esc(BIZ.phone) : ''}
+        </p>
+
+        <p>
+          <b>${esc(title)}</b>
+          ·
+          ${esc(new Date().toLocaleString())}
+        </p>
+
+      </div>
+
+      <div class="report-mark">
+
+        ${
+          BIZ?.logo_url
+            ? `<img src="${esc(BIZ.logo_url)}" alt="">`
+            : '🐔'
+        }
+
+      </div>
+
+    </div>
+  `;
+}
+
+
+function esc(x) {
+
+  return String(x ?? '').replace(
+    /[&<>"']/g,
+    c => ({
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#039;'
+    }[c])
+  );
+}
+
+
+function money(x) {
+
+  return (
+    BIZ?.currency || 'KES'
+  )
+  + ' '
+  + (Number(x) || 0).toLocaleString(
+    undefined,
+    {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    }
+  );
+}
+
+
+function num(x) {
+  return Number(x) || 0;
+}
+
+
+function fmtDate(x) {
+
+  if (!x) return '';
+
+  const d = new Date(x);
+
+  return isNaN(d)
+    ? String(x)
+    : d.toLocaleDateString();
+}
+
+
+function fmtDateTime(x) {
+
+  if (!x) return '';
+
+  const d = new Date(x);
+
+  return isNaN(d)
+    ? String(x)
+    : d.toLocaleString();
+}
+
+
+function toLocalInput(x) {
+
+  if (!x) return '';
+
+  const d = new Date(x);
+
+  if (isNaN(d)) {
+    return String(x).slice(0, 16);
+  }
+
+  const pad =
+    n => String(n).padStart(2, '0');
+
+  return (
+    `${d.getFullYear()}-` +
+    `${pad(d.getMonth() + 1)}-` +
+    `${pad(d.getDate())}T` +
+    `${pad(d.getHours())}:` +
+    `${pad(d.getMinutes())}`
+  );
+}
+
+
+/* =========================================================
+   PAGE ROUTER
+========================================================= */
+
+async function show(p) {
+
+  if (!roleAllowed(p)) {
+
+    toast(
+      'You do not have permission to open this section.'
+    );
+
+    return;
+  }
+
+  page = p;
+
+  nav();
+
+  try {
+
+    if (p === 'Dashboard')
+      return dashboardPage();
+
+    if (p === 'Notifications')
+      return showNotifications();
+
+    if (p === 'Ledger')
+      return ledgerPage();
+
+    if (p === 'Trial_Balance')
+      return trialBalancePage();
+
+    if (p === 'Invoices')
+      return invoicePage();
+
+    if (p === 'My_Activity')
+      return activityPage();
+
+    if (p === 'Audit_Log')
+      return auditPage();
+
+    if (p === 'Settings')
+      return settingsPage();
+
+    if (p === 'Payroll')
+      return payrollPage();
+
+    if (p === 'Calendar')
+      return calendarPage();
+
+    if (p === 'Tasks')
+      return tasksPage();
+
+    if (
+      p === 'Shared_Files' ||
+      p === 'Management_Files'
+    ) {
+      return filesPage(p);
+    }
+
+    return tablePage(p);
+
+  } catch (err) {
+
+    if ($('content')) {
+
+      $('content').innerHTML = `
+        <div class="panel error-panel">
+
+          <h2>
+            Unable to load ${esc(label(p))}
+          </h2>
+
+          <p>
+            ${esc(err.message)}
+          </p>
+
+          <button
+            onclick="show('${esc(p)}')">
+            Retry
+          </button>
+
+        </div>
+      `;
+    }
+  }
+}
+
+
+/* =========================================================
+   DASHBOARD
+========================================================= */
+
+async function dashboardPage() {
+
+  const d =
+    await api('dashboard');
+
+  $('content').innerHTML =
+
+    reportHeader('Operations Dashboard')
+
+    +
+
+    `
+    <div class="toolbar no-print">
+
+      <div>
+
+        <h1>
+          My operational dashboard
+        </h1>
+
+        <p class="muted">
+          Your role, activity and farm performance
+          in one view.
+        </p>
+
+      </div>
+
+      <div class="actions">
+
+        <button
+          class="secondary"
+          id="dashPdf">
+          Print / PDF
+        </button>
+
+        <button id="dashRefresh">
+          Refresh
+        </button>
+
+      </div>
+
+    </div>
+
+    <div class="cards">
+
+      ${
+        [
+          ['Current Birds', d.birds, '🐔'],
+          ['Active Flocks', d.flocks, '🪺'],
+          ['Deaths & Culls', d.deaths, '⚠'],
+          ['Sales', money(d.sales), '💰'],
+          ['Expenses', money(d.expenses), '💸'],
+          ['Payroll', money(d.payroll), '🧾'],
+          ['Net Result', money(d.profit), '📈'],
+          ['Active Employees', d.employees, '👥'],
+          ['Low Feed', d.lowFeed, '🌾'],
+          ['Unread', d.notifications, '🔔']
+        ]
+        .map(x => `
+
+          <div class="card">
+
+            <span class="card-icon">
+              ${x[2]}
+            </span>
+
+            <small>
+              ${x[0]}
+            </small>
+
+            <div class="value">
+              ${x[1]}
+            </div>
+
+          </div>
+
+        `)
+        .join('')
+      }
+
+    </div>
+
+    <div class="cards">
+
+      <div class="card">
+        <small>My logged activity</small>
+        <div class="value">${d.myActivityCount}</div>
+      </div>
+
+      <div class="card">
+        <small>My creates</small>
+        <div class="value">${d.myCreates}</div>
+      </div>
+
+      <div class="card">
+        <small>My updates</small>
+        <div class="value">${d.myUpdates}</div>
+      </div>
+
+      <div class="card">
+        <small>My failed actions</small>
+        <div class="value">${d.myFailures}</div>
+      </div>
+
+      <div class="card">
+        <small>My open tasks</small>
+        <div class="value">${d.myTasks}</div>
+      </div>
+
+      <div class="card">
+        <small>My open requests</small>
+        <div class="value">${d.myRequests}</div>
+      </div>
+
+      <div class="card">
+        <small>My recorded sales</small>
+        <div class="value">${money(d.mySales)}</div>
+      </div>
+
+    </div>
+
+    <div class="chart-grid">
+
+      <div class="panel">
+
+        <div class="panel-title">
+
+          <h2>
+            Sales vs expenses
+          </h2>
+
+          <span>
+            ${d.monthly?.length || 0} months
+          </span>
+
+        </div>
+
+        <canvas
+          id="financeChart"
+          height="260">
+        </canvas>
+
+      </div>
+
+      <div class="panel">
+
+        <div class="panel-title">
+
+          <h2>
+            Quick access
+          </h2>
+
+        </div>
+
+        <button
+          class="wide"
+          onclick="show('Calendar')">
+          📅 Calendar & schedule
+        </button>
+
+        <button
+          class="wide"
+          onclick="show('Tasks')">
+          ✅ My tasks
+        </button>
+
+        <button
+          class="wide"
+          onclick="show('Shared_Files')">
+          📁 Production resources
+        </button>
+
+        <button
+          class="wide"
+          onclick="show('Invoices')">
+          🧾 Filter invoices
+        </button>
+
+        <button
+          class="wide secondary"
+          onclick="show('My_Activity')">
+          🧑‍💻 My activity report
+        </button>
+
+      </div>
+
+    </div>
+    `;
+
+  if ($('dashPdf')) {
+    $('dashPdf').onclick = printPage;
+  }
+
+  if ($('dashRefresh')) {
+    $('dashRefresh').onclick =
+      () => show('Dashboard');
+  }
+
+  drawFinanceChart(
+    d.monthly || []
+  );
+
+  await refreshNotificationBadge();
+}
+
+
+/* =========================================================
+   FINANCE CHART
+========================================================= */
+
+function drawFinanceChart(rows) {
+
+  const c = $('financeChart');
+
+  if (!c) return;
+
+  const ctx =
+    c.getContext('2d');
+
+  const rect =
+    c.getBoundingClientRect();
+
+  const ratio =
+    devicePixelRatio || 1;
+
+  c.width =
+    rect.width * ratio;
+
+  c.height =
+    260 * ratio;
+
+  ctx.scale(ratio, ratio);
+
+  const w = rect.width;
+  const h = 260;
+
+  ctx.clearRect(0, 0, w, h);
+
+  if (!rows.length) {
+
+    ctx.fillText(
+      'No monthly transactions yet.',
+      20,
+      40
+    );
+
+    return;
+  }
+
+  const max =
+    Math.max(
+      1,
+      ...rows.map(
+        r =>
+          Math.max(
+            num(r.sales),
+            num(r.expenses)
+          )
+      )
+    );
+
+  const left = 45;
+  const right = 15;
+  const top = 20;
+  const bottom = 40;
+
+  const cw =
+    w - left - right;
+
+  const ch =
+    h - top - bottom;
+
+  ctx.strokeStyle = '#e5e7eb';
+
+  for (let i = 0; i < 5; i++) {
+
+    const y =
+      top + ch * i / 4;
+
+    ctx.beginPath();
+
+    ctx.moveTo(left, y);
+    ctx.lineTo(w - right, y);
+
+    ctx.stroke();
+  }
+
+  const step =
+    cw / Math.max(rows.length, 1);
+
+  const barW =
+    Math.max(
+      10,
+      Math.min(24, step * .28)
+    );
+
+  rows.forEach((r, i) => {
+
+    const x =
+      left +
+      i * step +
+      step / 2;
+
+    const hs =
+      num(r.sales) / max * ch;
+
+    const he =
+      num(r.expenses) / max * ch;
+
+    ctx.fillStyle = '#b91c1c';
+
+    ctx.fillRect(
+      x - barW - 2,
+      top + ch - hs,
+      barW,
+      hs
+    );
+
+    ctx.fillStyle = '#374151';
+
+    ctx.fillRect(
+      x + 2,
+      top + ch - he,
+      barW,
+      he
+    );
+
+    ctx.fillText(
+      String(r.month).slice(0, 7),
+      x,
+      h - 15
+    );
+  });
+}
+
+
+/* =========================================================
+   STANDARD TABLE PAGE
+========================================================= */
+
+async function tablePage(t) {
+
+  const rows =
+    await api(
+      'list',
+      { table: t }
+    );
+
+  const fields =
+    F[t] || [];
+
+  const canDelete =
+    S.user.role === 'ADMIN';
+
+  $('content').innerHTML =
+
+    reportHeader(
+      label(t) + ' Report'
+    )
+
+    +
+
+    `
+    <div class="toolbar no-print">
+
+      <div>
+
+        <h1>
+          ${esc(label(t))}
+        </h1>
+
+        <p class="muted">
+
+          ${rows.length}
+          record${rows.length === 1 ? '' : 's'}
+
+          ·
+
+          only Admin can delete
+
+        </p>
+
+      </div>
+
+      <div class="actions">
+
+        <button
+          class="secondary"
+          id="pdf">
+          Print / PDF
+        </button>
+
+        <button id="add">
+          + Add
+        </button>
+
+      </div>
+
+    </div>
+
+    <div class="panel">
+
+      <div class="toolbar no-print">
+
+        <input
+          id="search"
+          class="search"
+          placeholder="Search ${esc(label(t))}..."
+        >
+
+        <button
+          class="secondary"
+          id="clearSearch">
+          Clear
+        </button>
+
+      </div>
+
+      <div class="tablewrap">
+
+        <table>
+
+          <thead>
+
+            <tr>
+
+              ${
+                fields
+                .filter(
+                  f =>
+                    !(t === 'Users' &&
+                      f === 'password')
+                )
+                .map(
+                  f =>
+                    `<th>${esc(f)}</th>`
+                )
+                .join('')
+              }
+
+              <th class="no-print">
+                Actions
+              </th>
+
+            </tr>
+
+          </thead>
+
+          <tbody id="body"></tbody>
+
+        </table>
+
+      </div>
+
+    </div>
+    `;
+
+  $('pdf').onclick =
+    printPage;
+
+  $('add').onclick =
+    () => form(t);
+
+  $('clearSearch').onclick =
+    () => {
+
+      $('search').value = '';
+
+      render();
+    };
+
+  function render() {
+
+    const q =
+      $('search')
+        .value
+        .toLowerCase();
+
+    $('body').replaceChildren(
+
+      ...rows
+        .filter(
+          r =>
+            JSON.stringify(r)
+              .toLowerCase()
+              .includes(q)
+        )
+        .map(
+          r =>
+            rowElement(
+              t,
+              r,
+              fields,
+              canDelete
+            )
+        )
+    );
+  }
+
+  $('search').oninput =
+    render;
+
+  render();
+}
+
+
+/* =========================================================
+   TABLE ROW
+========================================================= */
+
+function rowElement(
+  t,
+  r,
+  fields,
+  canDelete
+) {
+
+  const tr =
+    document.createElement('tr');
+
+  fields
+    .filter(
+      f =>
+        !(t === 'Users' &&
+          f === 'password')
+    )
+    .forEach(f => {
+
+      const td =
+        document.createElement('td');
+
+      let v =
+        r[f];
+
+      if (
+        [
+          'created_at',
+          'updated_at',
+          'read_at'
+        ].includes(f)
+        && v
+      ) {
+
+        v =
+          fmtDateTime(v);
+      }
+
+      if (
+        [
+          'price',
+          'cost_price',
+          'unit_cost',
+          'stock_value',
+          'total',
+          'amount',
+          'basic_salary',
+          'allowances',
+          'deductions',
+          'net_pay',
+          'debit',
+          'credit'
+        ].includes(f)
+        && v !== ''
+      ) {
+
+        v =
+          money(v);
+      }
+
+      td.textContent =
+        v ?? '';
+
+      tr.append(td);
+    });
+
+  const td =
+    document.createElement('td');
+
+  td.className =
+    'no-print';
+
+  const e =
+    document.createElement('button');
+
+  e.textContent =
+    'Edit';
+
+  e.onclick =
+    () => form(t, r);
+
+  td.append(e);
+
+  if (canDelete) {
+
+    const d =
+      document.createElement('button');
+
+    d.textContent =
+      'Delete';
+
+    d.className =
+      'danger';
+
+    d.onclick =
+      () => remove(t, r.id);
+
+    td.append(d);
+  }
+
+  tr.append(td);
+
+  return tr;
+}
+
+
+/* =========================================================
+   LINKED OPTIONS
+========================================================= */
+
+async function opts(t, f) {
+
+  const k =
+    t + '_' + f;
+
+  if (LINKCACHE[k]) {
+    return LINKCACHE[k];
+  }
+
+  LINKCACHE[k] =
+    await api(
+      'linkedOptions',
+      {
+        table: t,
+        field: f
+      }
+    );
+
+  return LINKCACHE[k];
+}
+
+
+/* =========================================================
+   INPUT TYPES
+========================================================= */
+
+function inputType(f) {
+
+  if (
+    [
+      'birds',
+      'deaths',
+      'culls',
+      'eggs',
+      'quantity',
+      'minimum_stock',
+      'progress'
+    ].includes(f)
+  ) {
+    return 'number';
+  }
+
+  if (
+    [
+      'feed_kg',
+      'unit_cost',
+      'price',
+      'cost_price',
+      'unit_price',
+      'amount',
+      'basic_salary',
+      'allowances',
+      'deductions',
+      'debit',
+      'credit'
+    ].includes(f)
+  ) {
+    return 'number';
+  }
+
+  if (f === 'period') {
+    return 'month';
+  }
+
+  if (
+    [
+      'date',
+      'date_placed',
+      'due_date'
+    ].includes(f)
+  ) {
+    return 'date';
+  }
+
+  if (
+    [
+      'start_at',
+      'end_at'
+    ].includes(f)
+  ) {
+    return 'datetime-local';
+  }
+
+  return 'text';
+}
+
+
+/* =========================================================
+   SELECT VALUES
+========================================================= */
+
+function selectValues(t, f) {
+
+  if (
+    t === 'Users' &&
+    f === 'role'
+  ) {
+    return [
+      'ADMIN',
+      'MANAGER',
+      'ACCOUNTANT',
+      'HR',
+      'FARM_STAFF'
+    ];
+  }
+
+  if (
+    t === 'Users' &&
+    f === 'active'
+  ) {
+    return [
+      'TRUE',
+      'FALSE'
+    ];
+  }
+
+  if (
+    t === 'Products' &&
+    f === 'category'
+  ) {
+    return [
+      'CHICKEN',
+      'EGGS',
+      'FEED',
+      'MANURE',
+      'OTHER'
+    ];
+  }
+
+  if (
+    t === 'Products' &&
+    f === 'active'
+  ) {
+    return [
+      'TRUE',
+      'FALSE'
+    ];
+  }
+
+  if (
+    t === 'Flocks' &&
+    f === 'status'
+  ) {
+    return [
+      'ACTIVE',
+      'CLOSED',
+      'SOLD'
+    ];
+  }
+
+  if (
+    t === 'Sales' &&
+    f === 'payment_status'
+  ) {
+    return [
+      'PAID',
+      'PENDING',
+      'PARTIAL',
+      'REFUNDED'
+    ];
+  }
+
+  if (
+    t === 'Sales' &&
+    f === 'status'
+  ) {
+    return [
+      'COMPLETED',
+      'PENDING',
+      'VOID'
+    ];
+  }
+
+  if (
+    t === 'Employees' &&
+    f === 'status'
+  ) {
+    return [
+      'ACTIVE',
+      'INACTIVE'
+    ];
+  }
+
+  if (
+    t === 'Attendance' &&
+    f === 'status'
+  ) {
+    return [
+      'PRESENT',
+      'ABSENT',
+      'LEAVE',
+      'OFF'
+    ];
+  }
+
+  if (
+    t === 'Payroll' &&
+    f === 'status'
+  ) {
+    return [
+      'DRAFT',
+      'PAID',
+      'CANCELLED'
+    ];
+  }
+
+  if (
+    t === 'Notifications' &&
+    f === 'recipient_type'
+  ) {
+    return [
+      'ALL',
+      'ADMIN',
+      'USER'
+    ];
+  }
+
+  if (
+    t === 'Notifications' &&
+    f === 'priority'
+  ) {
+    return [
+      'LOW',
+      'NORMAL',
+      'HIGH',
+      'URGENT'
+    ];
+  }
+
+  if (
+    t === 'Notifications' &&
+    f === 'status'
+  ) {
+    return [
+      'UNREAD',
+      'READ'
+    ];
+  }
+
+  if (
+    t === 'Service_Requests' &&
+    f === 'priority'
+  ) {
+    return [
+      'LOW',
+      'NORMAL',
+      'HIGH',
+      'URGENT'
+    ];
+  }
+
+  if (
+    t === 'Service_Requests' &&
+    f === 'status'
+  ) {
+    return [
+      'OPEN',
+      'IN_PROGRESS',
+      'RESOLVED',
+      'CLOSED'
+    ];
+  }
+
+  if (
+    t === 'Chart_of_Accounts' &&
+    f === 'type'
+  ) {
+    return [
+      'ASSET',
+      'LIABILITY',
+      'EQUITY',
+      'INCOME',
+      'EXPENSE'
+    ];
+  }
+
+  if (
+    t === 'Chart_of_Accounts' &&
+    f === 'normal_balance'
+  ) {
+    return [
+      'DEBIT',
+      'CREDIT'
+    ];
+  }
+
+  if (
+    t === 'Chart_of_Accounts' &&
+    f === 'active'
+  ) {
+    return [
+      'TRUE',
+      'FALSE'
+    ];
+  }
+
+  if (
+    t === 'Calendar' &&
+    f === 'type'
+  ) {
+    return [
+      'EVENT',
+      'PROJECT',
+      'MEETING',
+      'DEADLINE',
+      'REMINDER'
+    ];
+  }
+
+  if (
+    t === 'Calendar' &&
+    f === 'priority'
+  ) {
+    return [
+      'LOW',
+      'NORMAL',
+      'HIGH',
+      'URGENT'
+    ];
+  }
+
+  if (
+    t === 'Calendar' &&
+    f === 'status'
+  ) {
+    return [
+      'PLANNED',
+      'IN_PROGRESS',
+      'DONE',
+      'CANCELLED'
+    ];
+  }
+
+  if (
+    t === 'Calendar' &&
+    f === 'all_day'
+  ) {
+    return [
+      'TRUE',
+      'FALSE'
+    ];
+  }
+
+  if (
+    t === 'Tasks' &&
+    f === 'priority'
+  ) {
+    return [
+      'LOW',
+      'NORMAL',
+      'HIGH',
+      'URGENT'
+    ];
+  }
+
+  if (
+    t === 'Tasks' &&
+    f === 'status'
+  ) {
+    return [
+      'OPEN',
+      'IN_PROGRESS',
+      'DONE',
+      'CANCELLED'
+    ];
+  }
+
+  if (
+    (
+      t === 'Shared_Files' ||
+      t === 'Management_Files'
+    )
+    &&
+    f === 'active'
+  ) {
+    return [
+      'TRUE',
+      'FALSE'
+    ];
+  }
+
+  return null;
+}
+
+
+/* =========================================================
+   ADD / EDIT FORM
+========================================================= */
+
+async function form(t, r = null) {
+
+  if (!$('modalContent')) {
+    toast('Modal form is not available.');
+    return;
+  }
+
+  $('modalContent').replaceChildren();
+
+  const h =
+    document.createElement('h2');
+
+  h.textContent =
+    (r ? 'Edit ' : 'Add ')
+    + label(t);
+
+  const fm =
+    document.createElement('form');
+
+  const g =
+    document.createElement('div');
+
+  g.className =
+    'grid';
+
+  for (const f of (F[t] || [])) {
+
+    const l =
+      document.createElement('label');
+
+    l.textContent =
+      label(f);
+
+    let i;
+
+    if (
+      LINK[t]?.[f]
+    ) {
+
+      i =
+        document.createElement('select');
+
+      i.add(
+        new Option(
+          'Select ' + label(f),
+          ''
+        )
+      );
+
+      const linked =
+        await opts(t, f);
+
+      for (const o of linked) {
+
+        const op =
+          new Option(
+            o.label,
+            o.id
+          );
+
+        if (
+          String(r?.[f]) ===
+          String(o.id)
+        ) {
+          op.selected = true;
+        }
+
+        i.add(op);
+      }
+
+    } else if (
+      selectValues(t, f)
+    ) {
+
+      i =
+        document.createElement('select');
+
+      selectValues(t, f)
+        .forEach(v =>
+          i.add(
+            new Option(v, v)
+          )
+        );
+
+      i.value =
+        r?.[f] ??
+        (
+          f === 'active'
+            ? 'TRUE'
+            : ''
+        );
+
+    } else {
+
+      i =
+        document.createElement(
+          [
+            'notes',
+            'description',
+            'message',
+            'response'
+          ].includes(f)
+            ? 'textarea'
+            : 'input'
+        );
+
+      i.type =
+        inputType(f);
+
+      if (i.type === 'number') {
+        i.step = 'any';
+      }
+
+      if (
+        r &&
+        i.type !== 'month' &&
+        i.type !== 'date' &&
+        i.type !== 'datetime-local'
+      ) {
+        i.value =
+          r[f] ?? '';
+      }
+
+      if (
+        r &&
+        [
+          'date',
+          'date_placed',
+          'due_date'
+        ].includes(f)
+      ) {
+        i.value =
+          String(
+            r[f] || ''
+          ).slice(0, 10);
+      }
+
+      if (
+        r &&
+        i.type === 'month'
+      ) {
+        i.value =
+          String(
+            r[f] || ''
+          ).slice(0, 7);
+      }
+
+      if (
+        r &&
+        i.type === 'datetime-local'
+      ) {
+        i.value =
+          toLocalInput(r[f]);
+      }
+    }
+
+    i.name = f;
+
+    if (
+      t === 'Users' &&
+      f === 'password'
+    ) {
+
+      i.type =
+        'password';
+
+      i.placeholder =
+        r
+          ? 'Leave blank to keep current password'
+          : 'Minimum 8 characters';
+    }
+
+    /*
+      SYSTEM-GENERATED FIELDS
+    */
+
+    if (
+      [
+        'total',
+        'stock_value',
+        'net_pay',
+        'invoice',
+        'request_no',
+        'task_no',
+        'payment_reference',
+        'sku'
+      ].includes(f)
+    ) {
+
+      i.readOnly = true;
+    }
+
+    if (
+      t === 'Journal' &&
+      [
+        'source',
+        'source_id'
+      ].includes(f)
+    ) {
+
+      i.readOnly = true;
+    }
+
+    if (
+      t === 'Shared_Files' ||
+      t === 'Management_Files'
+    ) {
+
+      if (f === 'url') {
+
+        i.placeholder =
+          'Paste Google Drive/shared resource URL';
+      }
+    }
+
+    /*
+      EMPLOYEE SALARY IS DISPLAYED AS READ-ONLY
+      IN PAYROLL
+    */
+
+    if (
+      t === 'Payroll' &&
+      f === 'basic_salary'
+    ) {
+
+      i.readOnly = true;
+
+      i.placeholder =
+        'Automatically loaded from employee record';
+    }
+
+    l.append(i);
+
+    g.append(l);
+  }
+
+  const actions =
+    document.createElement('div');
+
+  actions.className =
+    'modal-actions';
+
+  const cancel =
+    document.createElement('button');
+
+  cancel.type =
+    'button';
+
+  cancel.className =
+    'secondary';
+
+  cancel.textContent =
+    'Cancel';
+
+  cancel.onclick =
+    closeModal;
+
+  const save =
+    document.createElement('button');
+
+  save.type =
+    'submit';
+
+  save.textContent =
+    'Save Record';
+
+  actions.append(
+    cancel,
+    save
+  );
+
+  fm.append(
+    g,
+    actions
+  );
+
+  $('modalContent').append(
+    h,
+    fm
+  );
+
+  $('modal').hidden = false;
+
+
+  /*
+    LIVE CALCULATIONS
+  */
+
+  fm.addEventListener(
+    'input',
+    () => calc(t, fm)
+  );
+
+
+  /* =======================================================
+     PAYROLL EMPLOYEE SELECTION
+     AUTOLOAD BASIC SALARY
+  ======================================================= */
+
+  const emp =
+    fm.elements.employee_id;
+
+  if (
+    t === 'Payroll' &&
+    emp
+  ) {
+
+    emp.onchange =
+      async () => {
+
+        try {
+
+          const os =
+            LINKCACHE[
+              t + '_employee_id'
+            ]
+            ||
+            await opts(
+              t,
+              'employee_id'
+            );
+
+          const o =
+            os.find(
+              x =>
+                String(x.id) ===
+                String(emp.value)
+            );
+
+          if (
+            o &&
+            fm.elements.basic_salary
+          ) {
+
+            const salary =
+              o.data?.basic_salary ??
+              o.basic_salary ??
+              0;
+
+            fm.elements.basic_salary.value =
+              Number(salary || 0)
+                .toFixed(2);
+          }
+
+          calc(t, fm);
+
+        } catch (err) {
+
+          toast(
+            'Could not load employee salary: '
+            + err.message
+          );
+        }
+      };
+
+
+    /*
+      Also load salary immediately when
+      editing an existing payroll record
+    */
+
+    if (emp.value) {
+
+      setTimeout(
+        () => emp.onchange(),
+        50
+      );
+    }
+  }
+
+
+  /* =======================================================
+     SALES PRODUCT PRICE AUTOLOAD
+  ======================================================= */
+
+  const ps =
+    fm.elements.product_id;
+
+  if (
+    t === 'Sales' &&
+    ps
+  ) {
+
+    ps.onchange =
+      async () => {
+
+        try {
+
+          const products =
+            LINKCACHE[
+              t + '_product_id'
+            ]
+            ||
+            await opts(
+              t,
+              'product_id'
+            );
+
+          const o =
+            products.find(
+              x =>
+                String(x.id) ===
+                String(ps.value)
+            );
+
+          if (
+            o &&
+            fm.elements.unit_price
+          ) {
+
+            const price =
+              o.data?.price ??
+              o.price ??
+              0;
+
+            fm.elements.unit_price.value =
+              Number(price || 0)
+                .toFixed(2);
+          }
+
+          calc(t, fm);
+
+        } catch (err) {
+
+          toast(
+            'Could not load product price: '
+            + err.message
+          );
+        }
+      };
+
+
+    if (ps.value) {
+
+      setTimeout(
+        () => ps.onchange(),
+        50
+      );
+    }
+  }
+
+
+  calc(t, fm);
+
+
+  /*
+    AUTO-GENERATE INVOICE
+  */
+
+  if (
+    t === 'Sales' &&
+    !r &&
+    fm.elements.invoice
+  ) {
+
+    try {
+
+      const x =
+        await api('nextInvoice');
+
+      fm.elements.invoice.value =
+        x.invoice;
+
+    } catch (e) {
+
+      console.warn(
+        'Could not generate invoice number',
+        e
+      );
+    }
+  }
+
+
+  /*
+    PRODUCT SKU
+  */
+
+  if (
+    t === 'Products' &&
+    !r &&
+    fm.elements.sku
+  ) {
+
+    fm.elements.sku.value =
+      'Auto-generated on save';
+  }
+
+
+  /*
+    FEED SKU
+  */
+
+  if (
+    t === 'Feed' &&
+    !r &&
+    fm.elements.sku
+  ) {
+
+    fm.elements.sku.value =
+      'Auto-generated on save';
+  }
+
+
+  /* =======================================================
+     SAVE RECORD
+  ======================================================= */
+
+  fm.onsubmit =
+    async e => {
+
+      e.preventDefault();
+
+      const d =
+        Object.fromEntries(
+          new FormData(fm)
+        );
+
+
+      /*
+        Do not overwrite existing user
+        password with a blank password
+      */
+
+      if (
+        t === 'Users' &&
+        !d.password
+      ) {
+
+        delete d.password;
+      }
+
+
+      /*
+        Prevent manually changing calculated
+        payroll basic salary from browser
+      */
+
+      if (
+        t === 'Payroll' &&
+        d.employee_id
+      ) {
+
+        try {
+
+          const os =
+            await opts(
+              'Payroll',
+              'employee_id'
+            );
+
+          const employee =
+            os.find(
+              x =>
+                String(x.id) ===
+                String(d.employee_id)
+            );
+
+          if (employee) {
+
+            d.basic_salary =
+              Number(
+                employee.data?.basic_salary ??
+                employee.basic_salary ??
+                d.basic_salary ??
+                0
+              );
+          }
+
+        } catch (err) {
+
+          console.warn(
+            'Salary verification failed',
+            err
+          );
+        }
+      }
+
+
+      /*
+        Calculate payroll net pay
+      */
+
+      if (
+        t === 'Payroll'
+      ) {
+
+        d.net_pay =
+          (
+            num(d.basic_salary)
+            +
+            num(d.allowances)
+            -
+            num(d.deductions)
+          ).toFixed(2);
+      }
+
+
+      /*
+        Calculate sales total
+      */
+
+      if (
+        t === 'Sales'
+      ) {
+
+        d.total =
+          (
+            num(d.quantity)
+            *
+            num(d.unit_price)
+          ).toFixed(2);
+      }
+
+
+      /*
+        Calculate feed stock value
+      */
+
+      if (
+        t === 'Feed'
+      ) {
+
+        d.stock_value =
+          (
+            num(d.quantity)
+            *
+            num(d.unit_cost)
+          ).toFixed(2);
+      }
+
+
+      try {
+
+        const saved =
+          await api(
+            r
+              ? 'update'
+              : 'create',
+            {
+              table: t,
+              id: r?.id,
+              data: d
+            }
+          );
+
+        closeModal();
+
+        LINKCACHE = {};
+
+        toast(
+          'Saved successfully'
+        );
+
+        await show(t);
+
+        if (
+          t === 'Sales' &&
+          !r &&
+          saved?.invoice
+        ) {
+
+          toast(
+            'Invoice '
+            + saved.invoice
+            + ' generated automatically.'
+          );
+        }
+
+      } catch (err) {
+
+        toast(
+          err.message
+        );
+      }
+    };
+}
+
+
+/* =========================================================
+   CALCULATIONS
+========================================================= */
+
+function calc(t, f) {
+
+  if (!f) return;
+
+  const n =
+    x =>
+      num(
+        f.elements[x]?.value
+      );
+
+  const set =
+    (x, v) => {
+
+      if (f.elements[x]) {
+
+        f.elements[x].value =
+          Number(v || 0)
+            .toFixed(2);
+      }
+    };
+
+
+  if (t === 'Feed') {
+
+    set(
+      'stock_value',
+      n('quantity') *
+      n('unit_cost')
+    );
+  }
+
+
+  if (t === 'Sales') {
+
+    set(
+      'total',
+      n('quantity') *
+      n('unit_price')
+    );
+  }
+
+
+  if (t === 'Payroll') {
+
+    set(
+      'net_pay',
+      n('basic_salary')
+      +
+      n('allowances')
+      -
+      n('deductions')
+    );
+  }
+}
+
+
+/* =========================================================
+   NOTIFICATIONS
+========================================================= */
+
+async function showNotifications() {
+
+  const rows =
+    await api(
+      'myNotifications'
+    );
+
+  $('content').innerHTML =
+
+    reportHeader(
+      'Alerts Inbox'
+    )
+
+    +
+
+    `
+    <div class="toolbar no-print">
+
+      <h1>
+        Alerts Inbox
+      </h1>
+
+      <button
+        class="secondary"
+        id="pdf">
+        Print / PDF
+      </button>
+
+    </div>
+
+    <div
+      class="panel"
+      id="notes">
+    </div>
+    `;
+
+  $('pdf').onclick =
+    printPage;
+
+  const box =
+    $('notes');
+
+  if (!rows.length) {
+
+    box.innerHTML =
+      '<div class="empty">No notifications.</div>';
+  }
+
+  rows.forEach(r => {
+
+    const d =
+      document.createElement('div');
+
+    d.className =
+      'notify'
+      +
+      (
+        r.status !== 'READ'
+          ? ' unread-notification'
+          : ''
+      );
+
+    d.innerHTML =
+
+      `
+      <div>
+
+        <b>
+          ${esc(r.title)}
+        </b>
+
+        <p>
+          ${esc(r.message)}
+        </p>
+
+        <small>
+          ${esc(r.priority)}
+          ·
+          ${esc(fmtDateTime(r.created_at))}
+        </small>
+
+      </div>
+      `;
+
+    if (
+      r.status !== 'READ'
+    ) {
+
+      const b =
+        document.createElement('button');
+
+      b.textContent =
+        'Mark read';
+
+      b.onclick =
+        async () => {
+
+          try {
+
+            await api(
+              'markNotificationRead',
+              {
+                id: r.id
+              }
+            );
+
+            showNotifications();
+
+          } catch (err) {
+
+            toast(
+              err.message
+            );
+          }
+        };
+
+      d.append(b);
+    }
+
+    box.append(d);
+  });
+
+  refreshNotificationBadge(rows);
+}
+
+
+/* =========================================================
+   NOTIFICATION BADGE
+========================================================= */
+
+async function refreshNotificationBadge(
+  rows = null
+) {
+
+  try {
+
+    rows =
+      rows ||
+      await api(
+        'myNotifications'
+      );
+
+    const unread =
+      rows.filter(
+        x =>
+          x.status !== 'READ'
+      );
+
+    const count =
+      unread.length;
+
+    let b =
+      $('notificationBadge');
+
+    if (
+      !b &&
+      $('menu')
+    ) {
+
+      b =
+        document.createElement('span');
+
+      b.id =
+        'notificationBadge';
+
+      b.className =
+        'notification-badge';
+
+      $('menu').append(b);
+    }
+
+    if (b) {
+
+      b.textContent =
+        count > 99
+          ? '99+'
+          : count;
+
+      b.hidden =
+        count === 0;
+
+      b.classList.toggle(
+        'pulse',
+        count > 0
+      );
+    }
+
+
+    let ticker =
+      $('notificationTicker');
+
+    if (!ticker) {
+
+      ticker =
+        document.createElement('button');
+
+      ticker.id =
+        'notificationTicker';
+
+      ticker.className =
+        'notification-ticker';
+
+      ticker.onclick =
+        () => show('Notifications');
+
+      document.body.append(ticker);
+    }
+
+    ticker.hidden =
+      count === 0;
+
+    if (count) {
+
+      const latest =
+        unread[0];
+
+      ticker.innerHTML =
+        `🔔 <b>${count} new notification${count === 1 ? '' : 's'}</b>`
+        +
+        (
+          latest
+            ? ' — ' + esc(latest.title)
+            : ''
+        );
+
+      ticker.classList.remove(
+        'notify-bounce'
+      );
+
+      void ticker.offsetWidth;
+
+      ticker.classList.add(
+        'notify-bounce'
+      );
+    }
+
+  } catch (e) {
+
+    console.warn(
+      'Notification refresh failed',
+      e
+    );
+  }
+}
+
+
+/* =========================================================
+   GENERAL LEDGER
+========================================================= */
+
+async function ledgerPage() {
+
+  const accounts =
+    await api(
+      'list',
+      {
+        table:
+          'Chart_of_Accounts'
+      }
+    );
+
+  const active =
+    accounts.filter(
+      a =>
+        String(a.active)
+          .toUpperCase() !==
+        'FALSE'
+    );
+
+  $('content').innerHTML =
+
+    reportHeader(
+      'General Ledger'
+    )
+
+    +
+
+    `
+    <div class="toolbar no-print">
+
+      <h1>
+        General Ledger
+      </h1>
+
+      <button
+        class="secondary"
+        id="pdf">
+        Print / PDF
+      </button>
+
+    </div>
+
+    <div class="panel no-print">
+
+      <div class="filters">
+
+        <label>
+          Account
+
+          <select id="ledgerAccount">
+
+            ${
+              active
+              .map(
+                a =>
+                  `
+                  <option
+                    value="${esc(a.code)}">
+
+                    ${esc(
+                      a.code +
+                      ' · ' +
+                      a.account_name
+                    )}
+
+                  </option>
+                  `
+              )
+              .join('')
+            }
+
+          </select>
+
+        </label>
+
+        <label>
+          From
+          <input
+            type="date"
+            id="ledgerFrom">
+        </label>
+
+        <label>
+          To
+          <input
+            type="date"
+            id="ledgerTo">
+        </label>
+
+        <button
+          id="loadLedger">
+          Load Ledger
+        </button>
+
+      </div>
+
+    </div>
+
+    <div id="ledgerResult"></div>
+    `;
+
+  $('pdf').onclick =
+    printPage;
+
+  $('loadLedger').onclick =
+    loadLedger;
+
+  if (active.length) {
+
+    $('ledgerAccount').value =
+      active.find(
+        a =>
+          a.code === '1000'
+      )?.code
+      ||
+      active[0].code;
+
+    await loadLedger();
+  }
+}
+
+
+async function loadLedger() {
+
+  const code =
+    $('ledgerAccount').value;
+
+  if (!code) {
+
+    toast(
+      'Select an account'
+    );
+
+    return;
+  }
+
+  const r =
+    await api(
+      'ledger',
+      {
+        account_code: code,
+        from: $('ledgerFrom').value,
+        to: $('ledgerTo').value
+      }
+    );
+
+  $('ledgerResult').innerHTML =
+
+    `
+    <div class="panel">
+
+      <div class="ledger-head">
+
+        <div>
+
+          <h2>
+            ${esc(r.account.code)}
+            ·
+            ${esc(r.account.account_name)}
+          </h2>
+
+          <small>
+            Normal balance:
+            ${esc(r.account.normal_balance)}
+          </small>
+
+        </div>
+
+        <div>
+
+          <small>
+            Closing balance
+          </small>
+
+          <b>
+            ${money(r.closing_balance)}
+          </b>
+
+        </div>
+
+      </div>
+
+      <div class="tablewrap">
+
+        <table>
+
+          <thead>
+
+            <tr>
+              <th>Date</th>
+              <th>Reference</th>
+              <th>Description</th>
+              <th>Source</th>
+              <th>Debit</th>
+              <th>Credit</th>
+              <th>Running</th>
+            </tr>
+
+          </thead>
+
+          <tbody>
+
+            ${
+              r.rows
+              .map(
+                x =>
+                  `
+                  <tr>
+
+                    <td>
+                      ${esc(fmtDate(x.date))}
+                    </td>
+
+                    <td>
+                      ${esc(x.reference)}
+                    </td>
+
+                    <td>
+                      ${esc(x.description)}
+                    </td>
+
+                    <td>
+                      ${esc(x.source)}
+                    </td>
+
+                    <td>
+                      ${
+                        x.debit
+                          ? money(x.debit)
+                          : ''
+                      }
+                    </td>
+
+                    <td>
+                      ${
+                        x.credit
+                          ? money(x.credit)
+                          : ''
+                      }
+                    </td>
+
+                    <td>
+                      <b>
+                        ${money(x.running_balance)}
+                      </b>
+                    </td>
+
+                  </tr>
+                  `
+              )
+              .join('')
+              ||
+              `
+              <tr>
+                <td
+                  colspan="7"
+                  class="empty">
+                  No entries.
+                </td>
+              </tr>
+              `
+            }
+
+          </tbody>
+
+          <tfoot>
+
+            <tr>
+
+              <th colspan="4">
+                Totals
+              </th>
+
+              <th>
+                ${money(r.total_debit)}
+              </th>
+
+              <th>
+                ${money(r.total_credit)}
+              </th>
+
+              <th>
+                ${money(r.closing_balance)}
+              </th>
+
+            </tr>
+
+          </tfoot>
+
+        </table>
+
+      </div>
+
+    </div>
+    `;
+}
+
+
+/* =========================================================
+   TRIAL BALANCE
+========================================================= */
+
+async function trialBalancePage() {
+
+  $('content').innerHTML =
+
+    reportHeader(
+      'Trial Balance'
+    )
+
+    +
+
+    `
+    <div class="toolbar no-print">
+
+      <h1>
+        Trial Balance
+      </h1>
+
+      <button
+        class="secondary"
+        id="pdf">
+        Print / PDF
+      </button>
+
+    </div>
+
+    <div class="panel no-print">
+
+      <div class="filters">
+
+        <label>
+          From
+          <input
+            type="date"
+            id="tbFrom">
+        </label>
+
+        <label>
+          To
+          <input
+            type="date"
+            id="tbTo">
+        </label>
+
+        <button id="loadTB">
+          Load Trial Balance
+        </button>
+
+      </div>
+
+    </div>
+
+    <div id="tbResult"></div>
+    `;
+
+  $('pdf').onclick =
+    printPage;
+
+  $('loadTB').onclick =
+    loadTB;
+
+  await loadTB();
+}
+
+
+async function loadTB() {
+
+  const r =
+    await api(
+      'trialBalance',
+      {
+        from:
+          $('tbFrom').value,
+
+        to:
+          $('tbTo').value
+      }
+    );
+
+  const ok =
+    Math.abs(
+      r.total_debit -
+      r.total_credit
+    ) < .01;
+
+  $('tbResult').innerHTML =
+
+    `
+    <div class="panel">
+
+      <div
+        class="balance-banner
+        ${ok ? 'ok' : 'bad'}">
+
+        <b>
+          ${
+            ok
+              ? '✓ BALANCED'
+              : '⚠ NOT BALANCED'
+          }
+        </b>
+
+        <span>
+          Debit ${money(r.total_debit)}
+          ·
+          Credit ${money(r.total_credit)}
+        </span>
+
+      </div>
+
+      <div class="tablewrap">
+
+        <table>
+
+          <thead>
+
+            <tr>
+              <th>Code</th>
+              <th>Account</th>
+              <th>Type</th>
+              <th>Debit</th>
+              <th>Credit</th>
+            </tr>
+
+          </thead>
+
+          <tbody>
+
+            ${
+              r.rows
+              .map(
+                x =>
+                  `
+                  <tr>
+
+                    <td>
+                      ${esc(x.code)}
+                    </td>
+
+                    <td>
+                      ${esc(x.account_name)}
+                    </td>
+
+                    <td>
+                      ${esc(x.type)}
+                    </td>
+
+                    <td>
+                      ${money(x.debit)}
+                    </td>
+
+                    <td>
+                      ${money(x.credit)}
+                    </td>
+
+                  </tr>
+                  `
+              )
+              .join('')
+              ||
+              `
+              <tr>
+                <td
+                  colspan="5"
+                  class="empty">
+                  No entries.
+                </td>
+              </tr>
+              `
+            }
+
+          </tbody>
+
+          <tfoot>
+
+            <tr>
+
+              <th colspan="3">
+                Totals
+              </th>
+
+              <th>
+                ${money(r.total_debit)}
+              </th>
+
+              <th>
+                ${money(r.total_credit)}
+              </th>
+
+            </tr>
+
+          </tfoot>
+
+        </table>
+
+      </div>
+
+    </div>
+    `;
+}
+
+
+/* =========================================================
+   INVOICES
+========================================================= */
+
+async function invoicePage() {
+
+  $('content').innerHTML =
+
+    reportHeader(
+      'Invoice Centre'
+    )
+
+    +
+
+    `
+    <div class="toolbar no-print">
+
+      <div>
+
+        <h1>
+          Invoice Centre
+        </h1>
+
+        <p class="muted">
+          Filter invoices and print/download
+          only the invoices you need.
+        </p>
+
+      </div>
+
+      <button
+        class="secondary"
+        id="pdf">
+        Print / PDF
+      </button>
+
+    </div>
+
+    <div class="panel no-print">
+
+      <div class="filters">
+
+        <label>
+          Search
+          <input
+            id="invQ"
+            placeholder="Invoice/customer/product">
+        </label>
+
+        <label>
+          From
+          <input
+            type="date"
+            id="invFrom">
+        </label>
+
+        <label>
+          To
+          <input
+            type="date"
+            id="invTo">
+        </label>
+
+        <button id="loadInv">
+          Filter
+        </button>
+
+      </div>
+
+    </div>
+
+    <div id="invResult"></div>
+    `;
+
+  $('pdf').onclick =
+    printPage;
+
+  $('loadInv').onclick =
+    loadInvoices;
+
+  await loadInvoices();
+}
+
+
+async function loadInvoices() {
+
+  const rows =
+    await api(
+      'filterInvoices',
+      {
+        q: $('invQ').value,
+        from: $('invFrom').value,
+        to: $('invTo').value
+      }
+    );
+
+  $('invResult').innerHTML =
+
+    `
+    <div class="panel">
+
+      <div class="tablewrap">
+
+        <table>
+
+          <thead>
+
+            <tr>
+
+              <th>Invoice</th>
+              <th>Date</th>
+              <th>Customer</th>
+              <th>Total</th>
+              <th>Status</th>
+              <th class="no-print">
+                Actions
+              </th>
+
+            </tr>
+
+          </thead>
+
+          <tbody>
+
+            ${
+              rows
+              .map(
+                x =>
+                  `
+                  <tr>
+
+                    <td>
+                      ${esc(x.invoice)}
+                    </td>
+
+                    <td>
+                      ${esc(fmtDate(x.date))}
+                    </td>
+
+                    <td>
+                      ${esc(x.customer_id)}
+                    </td>
+
+                    <td>
+                      ${money(x.total)}
+                    </td>
+
+                    <td>
+                      ${esc(x.payment_status)}
+                    </td>
+
+                    <td class="no-print">
+
+                      <button
+                        onclick="printInvoice('${esc(x.id)}')">
+                        PDF
+                      </button>
+
+                      ${
+                        String(
+                          x.payment_status
+                        ).toUpperCase() !== 'PAID'
+
+                          ?
+
+                          `
+                          <button
+                            onclick="startPaystack('${esc(x.id)}')">
+                            Pay
+                          </button>
+
+                          <button
+                            onclick="syncSalePayment('${esc(x.id)}')">
+                            Sync
+                          </button>
+                          `
+
+                          : ''
+                      }
+
+                    </td>
+
+                  </tr>
+                  `
+              )
+              .join('')
+              ||
+              `
+              <tr>
+                <td
+                  colspan="6"
+                  class="empty">
+                  No invoices match.
+                </td>
+              </tr>
+              `
+            }
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </div>
+    `;
+}
+
+
+/* =========================================================
+   PAYSTACK
+========================================================= */
+
+async function startPaystack(id) {
+
+  const email =
+    prompt(
+      'Customer email for Paystack checkout:'
+    );
+
+  if (!email) return;
+
+  try {
+
+    const p =
+      await api(
+        'initializePayment',
+        {
+          sale_id: id,
+          email
+        }
+      );
+
+    if (
+      p?.authorization_url
+    ) {
+
+      window.open(
+        p.authorization_url,
+        '_blank'
+      );
+
+      toast(
+        'Paystack checkout opened. After payment, use Sync Payment in the invoice record.'
+      );
+
+    } else {
+
+      throw new Error(
+        'Paystack did not return a checkout URL.'
+      );
+    }
+
+  } catch (e) {
+
+    toast(
+      e.message
+    );
+  }
+}
+
+
+async function syncSalePayment(id) {
+
+  const ref =
+    prompt(
+      'Enter the Paystack transaction reference:'
+    );
+
+  if (!ref) return;
+
+  try {
+
+    const r =
+      await api(
+        'syncPaystack',
+        {
+          reference: ref,
+          sale_id: id
+        }
+      );
+
+    toast(
+      'Payment verified: ' +
+      r.status
+    );
+
+    await loadInvoices();
+
+  } catch (e) {
+
+    toast(
+      e.message
+    );
+  }
+}
+
+
+/* =========================================================
+   PRINT INVOICE
+========================================================= */
+
+async function printInvoice(id) {
+
+  try {
+
+    const x =
+      await api(
+        'generateInvoice',
+        {
+          id
+        }
+      );
+
+    const oldContent =
+      $('content').innerHTML;
+
+    $('content').innerHTML =
+
+      `
+      <div class="invoice-print">
+
+        ${reportHeader(
+          'Tax / Sales Invoice'
+        )}
+
+        <h2>
+          Invoice
+          ${esc(x.sale.invoice)}
+        </h2>
+
+        <p>
+          Date:
+          ${esc(fmtDate(x.sale.date))}
+        </p>
+
+        <hr>
+
+        <p>
+          <b>Customer:</b>
+          ${esc(
+            x.customer?.name ||
+            'Walk-in'
+          )}
+        </p>
+
+        <p>
+          <b>Phone:</b>
+          ${esc(
+            x.customer?.phone ||
+            ''
+          )}
+        </p>
+
+        <table>
+
+          <thead>
+
+            <tr>
+              <th>SKU</th>
+              <th>Product</th>
+              <th>Qty</th>
+              <th>Unit price</th>
+              <th>Total</th>
+            </tr>
+
+          </thead>
+
+          <tbody>
+
+            <tr>
+
+              <td>
+                ${esc(x.product?.sku || '')}
+              </td>
+
+              <td>
+                ${esc(x.product?.name || '')}
+              </td>
+
+              <td>
+                ${esc(x.sale.quantity)}
+              </td>
+
+              <td>
+                ${money(x.sale.unit_price)}
+              </td>
+
+              <td>
+                ${money(x.sale.total)}
+              </td>
+
+            </tr>
+
+          </tbody>
+
+        </table>
+
+        <h2>
+          Total:
+          ${money(x.sale.total)}
+        </h2>
+
+        <p>
+          Payment:
+          ${esc(x.sale.payment_status)}
+          ${
+            x.sale.payment_reference
+              ? ' · ' +
+                esc(
+                  x.sale.payment_reference
+                )
+              : ''
+          }
+        </p>
+
+      </div>
+      `;
+
+    window.print();
+
+    setTimeout(
+      () => {
+        if ($('content')) {
+          $('content').innerHTML =
+            oldContent;
+        }
+
+        show('Invoices');
+      },
+      700
+    );
+
+  } catch (err) {
+
+    toast(
+      err.message
+    );
+  }
+}
+
+
+/* =========================================================
+   MY ACTIVITY
+========================================================= */
+
+async function activityPage() {
+
+  const rows =
+    await api(
+      'myActivity'
+    );
+
+  $('content').innerHTML =
+
+    reportHeader(
+      'My Activity Report'
+    )
+
+    +
+
+    `
+    <div class="toolbar no-print">
+
+      <h1>
+        My Activity
+      </h1>
+
+      <button
+        class="secondary"
+        onclick="printPage()">
+        Print / PDF
+      </button>
+
+    </div>
+
+    <div class="panel">
+
+      <div class="tablewrap">
+
+        <table>
+
+          <thead>
+
+            <tr>
+              <th>Time</th>
+              <th>Action</th>
+              <th>Module</th>
+              <th>Status</th>
+              <th>Message</th>
+            </tr>
+
+          </thead>
+
+          <tbody>
+
+            ${
+              rows
+              .map(
+                x =>
+                  `
+                  <tr>
+
+                    <td>
+                      ${esc(
+                        fmtDateTime(
+                          x.timestamp
+                        )
+                      )}
+                    </td>
+
+                    <td>
+                      ${esc(x.action)}
+                    </td>
+
+                    <td>
+                      ${esc(x.table_name)}
+                    </td>
+
+                    <td>
+                      ${esc(x.status)}
+                    </td>
+
+                    <td>
+                      ${esc(x.message)}
+                    </td>
+
+                  </tr>
+                  `
+              )
+              .join('')
+              ||
+              `
+              <tr>
+                <td colspan="5">
+                  No activity.
+                </td>
+              </tr>
+              `
+            }
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </div>
+    `;
+}
+
+
+/* =========================================================
+   AUDIT LOG
+========================================================= */
+
+async function auditPage() {
+
+  if (
+    S.user.role !== 'ADMIN'
+  ) {
+
+    toast(
+      'Admin only'
+    );
+
+    return;
+  }
+
+  $('content').innerHTML =
+
+    reportHeader(
+      'Audit Log'
+    )
+
+    +
+
+    `
+    <div class="toolbar no-print">
+
+      <h1>
+        Audit Log
+      </h1>
+
+      <button
+        class="secondary"
+        onclick="printPage()">
+        Print / PDF
+      </button>
+
+    </div>
+
+    <div class="panel no-print">
+
+      <div class="filters">
+
+        <label>
+          From
+          <input
+            type="date"
+            id="af">
+        </label>
+
+        <label>
+          To
+          <input
+            type="date"
+            id="at">
+        </label>
+
+        <label>
+          User ID
+          <input id="au">
+        </label>
+
+        <label>
+          Action
+          <input id="aa">
+        </label>
+
+        <label>
+          Module
+          <input id="am">
+        </label>
+
+        <label>
+          Status
+          <input id="as">
+        </label>
+
+        <button
+          id="loadAudit">
+          Filter
+        </button>
+
+      </div>
+
+    </div>
+
+    <div id="auditResult"></div>
+    `;
+
+  $('loadAudit').onclick =
+    loadAudit;
+
+  await loadAudit();
+}
+
+
+async function loadAudit() {
+
+  const rows =
+    await api(
+      'auditReport',
+      {
+        from: $('af').value,
+        to: $('at').value,
+        user_id: $('au').value,
+        action: $('aa').value,
+        table_name: $('am').value,
+        status: $('as').value
+      }
+    );
+
+  $('auditResult').innerHTML =
+
+    `
+    <div class="panel">
+
+      <div class="tablewrap">
+
+        <table>
+
+          <thead>
+
+            <tr>
+              <th>Time</th>
+              <th>User</th>
+              <th>Action</th>
+              <th>Module</th>
+              <th>Status</th>
+              <th>Message</th>
+            </tr>
+
+          </thead>
+
+          <tbody>
+
+            ${
+              rows
+              .map(
+                x =>
+                  `
+                  <tr>
+
+                    <td>
+                      ${esc(
+                        fmtDateTime(
+                          x.timestamp
+                        )
+                      )}
+                    </td>
+
+                    <td>
+                      ${esc(x.username)}
+                    </td>
+
+                    <td>
+                      ${esc(x.action)}
+                    </td>
+
+                    <td>
+                      ${esc(x.table_name)}
+                    </td>
+
+                    <td>
+                      ${esc(x.status)}
+                    </td>
+
+                    <td>
+                      ${esc(x.message)}
+                    </td>
+
+                  </tr>
+                  `
+              )
+              .join('')
+              ||
+              `
+              <tr>
+                <td colspan="6">
+                  No audit entries.
+                </td>
+              </tr>
+              `
+            }
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </div>
+    `;
+}
+
+
+/* =========================================================
+   SHARED FILES / MANAGEMENT FILES
+========================================================= */
+
+async function filesPage(t) {
+
+  const links =
+    await api(
+      'folderLinks'
+    );
+
+  const rows =
+    await api(
+      'list',
+      {
+        table: t
+      }
+    );
+
+  const isMgmt =
+    t === 'Management_Files';
+
+  const folderUrl =
+    isMgmt
+      ? links.management
+      : links.production;
+
+  $('content').innerHTML =
+
+    reportHeader(
+      isMgmt
+        ? 'Management Shared Folder'
+        : 'Production & Resources'
+    )
+
+    +
+
+    `
+    <div class="toolbar no-print">
+
+      <div>
+
+        <h1>
+
+          ${
+            isMgmt
+              ? 'Management Documents'
+              : 'Shared Production Resources'
+          }
+
+        </h1>
+
+        <p class="muted">
+
+          Shared Google Drive resources
+          available to authorized portal users.
+
+        </p>
+
+      </div>
+
+      <div>
+
+        ${
+          folderUrl
+            ? `
+              <a
+                class="button"
+                href="${esc(folderUrl)}"
+                target="_blank"
+                rel="noopener">
+                Open Shared Folder
+              </a>
+              `
+            : ''
+        }
+
+        <button id="add">
+          + Add resource
+        </button>
+
+      </div>
+
+    </div>
+
+    <div class="panel">
+
+      <div class="tablewrap">
+
+        <table>
+
+          <thead>
+
+            <tr>
+              <th>Name</th>
+              <th>Description</th>
+              <th>Category</th>
+              <th>Resource</th>
+            </tr>
+
+          </thead>
+
+          <tbody>
+
+            ${
+              rows
+              .map(
+                x =>
+                  `
+                  <tr>
+
+                    <td>
+                      ${esc(x.name)}
+                    </td>
+
+                    <td>
+                      ${esc(x.description)}
+                    </td>
+
+                    <td>
+                      ${esc(x.category)}
+                    </td>
+
+                    <td>
+
+                      <a
+                        href="${esc(x.url)}"
+                        target="_blank"
+                        rel="noopener">
+                        Open
+                      </a>
+
+                    </td>
+
+                  </tr>
+                  `
+              )
+              .join('')
+              ||
+              `
+              <tr>
+                <td colspan="4">
+                  No resources listed.
+                </td>
+              </tr>
+              `
+            }
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </div>
+    `;
+
+  $('add').onclick =
+    () => form(t);
+}
+
+
+/* =========================================================
+   PAYROLL CENTRE
+========================================================= */
+
+async function payrollPage() {
+
+  const rows =
+    await api(
+      'list',
+      {
+        table:
+          'Payroll'
+      }
+    );
+
+  const emps =
+    await api(
+      'linkedOptions',
+      {
+        table:
+          'Payroll',
+        field:
+          'employee_id'
+      }
+    );
+
+  $('content').innerHTML =
+
+    reportHeader(
+      'Payroll Centre'
+    )
+
+    +
+
+    `
+    <div class="toolbar no-print">
+
+      <div>
+
+        <h1>
+          Payroll Centre
+        </h1>
+
+        <p class="muted">
+
+          Filter by employee and period,
+          then print a personalised payroll report.
+
+        </p>
+
+      </div>
+
+      <button
+        class="secondary"
+        onclick="printPage()">
+        Print / PDF
+      </button>
+
+    </div>
+
+    <div class="panel no-print">
+
+      <div class="filters">
+
+        <label>
+
+          Employee
+
+          <select id="payEmp">
+
+            <option value="">
+              All employees
+            </option>
+
+            ${
+              emps
+              .map(
+                o =>
+                  `
+                  <option
+                    value="${esc(o.id)}">
+                    ${esc(o.label)}
+                  </option>
+                  `
+              )
+              .join('')
+            }
+
+          </select>
+
+        </label>
+
+        <label>
+
+          From
+
+          <input
+            type="month"
+            id="payFrom">
+
+        </label>
+
+        <label>
+
+          To
+
+          <input
+            type="month"
+            id="payTo">
+
+        </label>
+
+        <button id="payFilter">
+          Filter
+        </button>
+
+        <button
+          class="secondary"
+          id="payPersonal">
+          Personalised PDF
+        </button>
+
+      </div>
+
+    </div>
+
+    <div id="payResult"></div>
+    `;
+
+
+  $('payFilter').onclick =
+    render;
+
+  $('payPersonal').onclick =
+    personal;
+
+
+  /*
+    FILTERING
+  */
+
+  function filtered() {
+
+    const eid =
+      $('payEmp').value;
+
+    const from =
+      $('payFrom').value;
+
+    const to =
+      $('payTo').value;
+
+    return rows.filter(
+      r => {
+
+        const period =
+          String(
+            r.period || ''
+          ).slice(0, 7);
+
+        return (
+          (
+            !eid ||
+            String(r.employee_id) ===
+            String(eid)
+          )
+
+          &&
+
+          (
+            !from ||
+            period >= from
+          )
+
+          &&
+
+          (
+            !to ||
+            period <= to
+          )
+        );
+      }
+    );
+  }
+
+
+  /*
+    RENDER PAYROLL
+  */
+
+  function render() {
+
+    const data =
+      filtered();
+
+    $('payResult').innerHTML =
+
+      `
+      <div class="panel">
+
+        <div class="tablewrap">
+
+          <table>
+
+            <thead>
+
+              <tr>
+
+                <th>Period</th>
+                <th>Employee</th>
+                <th>Basic</th>
+                <th>Allowances</th>
+                <th>Deductions</th>
+                <th>Net pay</th>
+                <th>Status</th>
+
+              </tr>
+
+            </thead>
+
+            <tbody>
+
+              ${
+                data
+                .map(
+                  x =>
+                    `
+                    <tr>
+
+                      <td>
+                        ${esc(x.period)}
+                      </td>
+
+                      <td>
+
+                        ${esc(
+                          emps.find(
+                            o =>
+                              String(o.id) ===
+                              String(x.employee_id)
+                          )?.label
+                          ||
+                          x.employee_id
+                        )}
+
+                      </td>
+
+                      <td>
+                        ${money(x.basic_salary)}
+                      </td>
+
+                      <td>
+                        ${money(x.allowances)}
+                      </td>
+
+                      <td>
+                        ${money(x.deductions)}
+                      </td>
+
+                      <td>
+                        <b>
+                          ${money(x.net_pay)}
+                        </b>
+                      </td>
+
+                      <td>
+                        ${esc(x.status)}
+                      </td>
+
+                    </tr>
+                    `
+                )
+                .join('')
+                ||
+                `
+                <tr>
+                  <td
+                    colspan="7">
+                    No payroll records match.
+                  </td>
+                </tr>
+                `
+              }
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+      </div>
+      `;
+  }
+
+
+  /*
+    PERSONALISED PAYROLL REPORT
+  */
+
+  function personal() {
+
+    const data =
+      filtered();
+
+    if (!data.length) {
+
+      toast(
+        'No payroll record matches the selected filter.'
+      );
+
+      return;
+    }
+
+    const eid =
+      $('payEmp').value;
+
+    if (!eid) {
+
+      toast(
+        'Select one employee for a personalised report.'
+      );
+
+      return;
+    }
+
+    const employee =
+      emps.find(
+        o =>
+          String(o.id) ===
+          String(eid)
+      );
+
+    $('content').innerHTML =
+
+      reportHeader(
+        'Personalised Payroll Report'
+      )
+
+      +
+
+      `
+      <div class="panel">
+
+        <h2>
+          ${esc(
+            employee?.label ||
+            eid
+          )}
+        </h2>
+
+        <p>
+          Generated:
+          ${esc(
+            new Date()
+              .toLocaleString()
+          )}
+        </p>
+
+        <table>
+
+          <thead>
+
+            <tr>
+              <th>Period</th>
+              <th>Basic</th>
+              <th>Allowances</th>
+              <th>Deductions</th>
+              <th>Net Pay</th>
+              <th>Status</th>
+            </tr>
+
+          </thead>
+
+          <tbody>
+
+            ${
+              data
+              .map(
+                x =>
+                  `
+                  <tr>
+
+                    <td>
+                      ${esc(x.period)}
+                    </td>
+
+                    <td>
+                      ${money(x.basic_salary)}
+                    </td>
+
+                    <td>
+                      ${money(x.allowances)}
+                    </td>
+
+                    <td>
+                      ${money(x.deductions)}
+                    </td>
+
+                    <td>
+                      <b>
+                        ${money(x.net_pay)}
+                      </b>
+                    </td>
+
+                    <td>
+                      ${esc(x.status)}
+                    </td>
+
+                  </tr>
+                  `
+              )
+              .join('')
+            }
+
+          </tbody>
+
+        </table>
+
+        <h2>
+
+          Total Net Pay:
+          ${money(
+            data.reduce(
+              (s, x) =>
+                s + num(x.net_pay),
+              0
+            )
+          )}
+
+        </h2>
+
+      </div>
+      `;
+
+    window.print();
+
+    setTimeout(
+      () => show('Payroll'),
+      700
+    );
+  }
+
+
+  render();
+}
+
+
+/* =========================================================
+   CALENDAR
+========================================================= */
+
+async function calendarPage() {
+
+  const rows =
+    await api(
+      'list',
+      {
+        table:
+          'Calendar'
+      }
+    );
+
+  $('content').innerHTML =
+
+    reportHeader(
+      'Shared Calendar'
+    )
+
+    +
+
+    `
+    <div class="toolbar no-print">
+
+      <div>
+
+        <h1>
+          Calendar / Events / Projects
+        </h1>
+
+        <p class="muted">
+          Events and shared schedules create
+          inbox alerts when assigned.
+        </p>
+
+      </div>
+
+      <button id="add">
+        + Add event
+      </button>
+
+    </div>
+
+    <div class="panel">
+
+      <div class="calendar-list">
+
+        ${
+          rows
+          .sort(
+            (a, b) =>
+              String(a.start_at)
+                .localeCompare(
+                  String(b.start_at)
+                )
+          )
+          .map(
+            x =>
+              `
+              <article
+                class="calendar-item">
+
+                <b>
+                  ${esc(x.title)}
+                </b>
+
+                <span>
+
+                  ${esc(
+                    fmtDateTime(
+                      x.start_at
+                    )
+                  )}
+
+                  ${
+                    x.end_at
+                      ? ' → ' +
+                        esc(
+                          fmtDateTime(
+                            x.end_at
+                          )
+                        )
+                      : ''
+                  }
+
+                </span>
+
+                <small>
+
+                  ${esc(x.type)}
+                  ·
+                  ${esc(x.priority)}
+                  ·
+                  ${esc(x.status)}
+
+                </small>
+
+                <p>
+                  ${esc(
+                    x.description || ''
+                  )}
+                </p>
+
+              </article>
+              `
+          )
+          .join('')
+          ||
+          `
+          <div class="empty">
+            No scheduled items.
+          </div>
+          `
+        }
+
+      </div>
+
+    </div>
+    `;
+
+  $('add').onclick =
+    () => form('Calendar');
+}
+
+
+/* =========================================================
+   TASKS
+========================================================= */
+
+async function tasksPage() {
+
+  const rows =
+    await api(
+      'list',
+      {
+        table:
+          'Tasks'
+      }
+    );
+
+  $('content').innerHTML =
+
+    reportHeader(
+      'Tasks'
+    )
+
+    +
+
+    `
+    <div class="toolbar no-print">
+
+      <h1>
+        Tasks & Projects
+      </h1>
+
+      <button id="add">
+        + Add task
+      </button>
+
+    </div>
+
+    <div class="panel">
+
+      <div class="tablewrap">
+
+        <table>
+
+          <thead>
+
+            <tr>
+
+              <th>Task</th>
+              <th>Title</th>
+              <th>Due</th>
+              <th>Priority</th>
+              <th>Status</th>
+              <th>Progress</th>
+
+            </tr>
+
+          </thead>
+
+          <tbody>
+
+            ${
+              rows
+              .map(
+                x =>
+                  `
+                  <tr>
+
+                    <td>
+                      ${esc(x.task_no)}
+                    </td>
+
+                    <td>
+                      ${esc(x.title)}
+                    </td>
+
+                    <td>
+                      ${esc(
+                        fmtDate(
+                          x.due_date
+                        )
+                      )}
+                    </td>
+
+                    <td>
+                      ${esc(x.priority)}
+                    </td>
+
+                    <td>
+                      ${esc(x.status)}
+                    </td>
+
+                    <td>
+                      ${esc(x.progress)}%
+                    </td>
+
+                  </tr>
+                  `
+              )
+              .join('')
+              ||
+              `
+              <tr>
+                <td colspan="6">
+                  No tasks.
+                </td>
+              </tr>
+              `
+            }
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </div>
+    `;
+
+  $('add').onclick =
+    () => form('Tasks');
+}
+
+
+/* =========================================================
+   SETTINGS
+========================================================= */
+
+async function settingsPage() {
+
+  if (
+    S.user.role !== 'ADMIN'
+  ) {
+
+    toast(
+      'Admin only'
+    );
+
+    return;
+  }
+
+  const cfg =
+    await api(
+      'paystackConfig'
+    );
+
+  $('content').innerHTML =
+
+    reportHeader(
+      'Portal & System Settings'
+    )
+
+    +
+
+    `
+    <div class="toolbar no-print">
+
+      <div>
+
+        <h1>
+          Custom Portal
+        </h1>
+
+        <p class="muted">
+
+          Branding, business identity
+          and payment integration.
+
+        </p>
+
+      </div>
+
+    </div>
+
+    <div class="panel">
+
+      <form
+        id="settingsForm"
+        class="grid">
+
+        <label>
+
+          Business name
+
+          <input
+            name="business_name"
+            value="${esc(
+              BIZ.business_name || ''
+            )}">
+
+        </label>
+
+        <label>
+
+          Portal name
+
+          <input
+            name="portal_name"
+            value="${esc(
+              BIZ.portal_name || ''
+            )}">
+
+        </label>
+
+        <label>
+
+          Address
+
+          <input
+            name="address"
+            value="${esc(
+              BIZ.address || ''
+            )}">
+
+        </label>
+
+        <label>
+
+          Email
+
+          <input
+            name="email"
+            value="${esc(
+              BIZ.email || ''
+            )}">
+
+        </label>
+
+        <label>
+
+          Phone
+
+          <input
+            name="phone"
+            value="${esc(
+              BIZ.phone || ''
+            )}">
+
+        </label>
+
+        <label>
+
+          Currency
+
+          <input
+            name="currency"
+            value="${esc(
+              BIZ.currency || 'KES'
+            )}">
+
+        </label>
+
+        <label>
+
+          Logo URL
+
+          <input
+            name="logo_url"
+            value="${esc(
+              BIZ.logo_url || ''
+            )}">
+
+        </label>
+
+        <label>
+
+          Theme color
+
+          <input
+            type="color"
+            name="theme_color"
+            value="${esc(
+              BIZ.theme_color ||
+              '#b91c1c'
+            )}">
+
+        </label>
+
+        <label>
+
+          Portal description
+
+          <textarea
+            name="portal_description">
+${esc(
+  BIZ.portal_description || ''
+)}
+          </textarea>
+
+        </label>
+
+        <div class="modal-actions">
+
+          <button>
+            Save branding
+          </button>
+
+        </div>
+
+      </form>
+
+    </div>
+
+    <div class="panel">
+
+      <h2>
+        Paystack Africa
+      </h2>
+
+      <p class="muted">
+
+        The secret key is stored in Apps Script
+        Properties and is never returned
+        to the browser.
+
+      </p>
+
+      <form
+        id="paystackForm"
+        class="grid">
+
+        <label>
+
+          Public key
+
+          <input
+            name="publicKey"
+            value="${esc(
+              cfg.publicKey || ''
+            )}"
+            placeholder="pk_live_...">
+
+        </label>
+
+        <label>
+
+          Secret key
+
+          <input
+            name="secretKey"
+            type="password"
+            placeholder="sk_live_...">
+
+        </label>
+
+        <div class="modal-actions">
+
+          <button>
+            Save Paystack settings
+          </button>
+
+        </div>
+
+      </form>
+
+    </div>
+    `;
+
+
+  $('settingsForm').onsubmit =
+    async e => {
+
+      e.preventDefault();
+
+      try {
+
+        BIZ =
+          await api(
+            'settings',
+            {
+              data:
+                Object.fromEntries(
+                  new FormData(
+                    e.target
+                  )
+                )
+            }
+          );
+
+        applyBrand();
+
+        toast(
+          'Branding saved'
+        );
+
+      } catch (err) {
+
+        toast(
+          err.message
+        );
+      }
+    };
+
+
+  $('paystackForm').onsubmit =
+    async e => {
+
+      e.preventDefault();
+
+      try {
+
+        await api(
+          'savePaystackConfig',
+          {
+            data:
+              Object.fromEntries(
+                new FormData(
+                  e.target
+                )
+              )
+          }
+        );
+
+        toast(
+          'Paystack configuration saved securely'
+        );
+
+      } catch (err) {
+
+        toast(
+          err.message
+        );
+      }
+    };
+}
+
+
+/* =========================================================
+   DELETE
+========================================================= */
+
+async function remove(t, id) {
+
+  if (
+    S.user.role !== 'ADMIN'
+  ) {
+
+    toast(
+      'Only Admin can delete important records.'
+    );
+
+    return;
+  }
+
+  if (
+    !confirm(
+      'Delete this record? This action is permanently logged.'
+    )
+  ) {
+    return;
+  }
+
+  try {
+
+    await api(
+      'delete',
+      {
+        table: t,
+        id
+      }
+    );
+
+    toast(
+      'Deleted successfully'
+    );
+
+    await show(t);
+
+  } catch (e) {
+
+    toast(
+      e.message
+    );
+  }
+}
+
+
+/* =========================================================
+   PRINT
+========================================================= */
+
+function printPage() {
+
+  const old =
+    document.title;
+
+  document.title =
+    (
+      BIZ?.business_name ||
+      'Modaxoft Poultry'
+    )
+    +
+    ' - '
+    +
+    label(page);
+
+  window.print();
+
+  setTimeout(
+    () => {
+      document.title = old;
+    },
+    1000
+  );
+}
+
+
+/* =========================================================
+   MODAL
+========================================================= */
+
+function closeModal() {
+
+  if ($('modal')) {
+    $('modal').hidden = true;
+  }
+}
+
+
+if ($('close')) {
+
+  $('close').onclick =
+    closeModal;
+}
+
+
+if ($('modal')) {
+
+  $('modal').onclick =
+    e => {
+
+      if (
+        e.target ===
+        $('modal')
+      ) {
+        closeModal();
+      }
+    };
+}
+
+
+/* =========================================================
+   LOGOUT
+========================================================= */
+
+if ($('logout')) {
+
+  $('logout').onclick =
+    async () => {
+
+      try {
+
+        await api(
+          'logout'
+        );
+
+      } catch (e) {
+
+        console.warn(
+          'Logout API failed',
+          e
+        );
+      }
+
+      localStorage.removeItem(
+        'mp_v5'
+      );
+
+      S = null;
+
+      closeSidebar();
+
+      boot();
+    };
+}
+
+
+/* =========================================================
+   SIDEBAR
+========================================================= */
+
+if ($('menu')) {
+
+  $('menu').onclick =
+    toggleSidebar;
+}
+
+
+if ($('closeSidebar')) {
+
+  $('closeSidebar').onclick =
+    closeSidebar;
+}
+
+
+if ($('sidebarBackdrop')) {
+
+  $('sidebarBackdrop').onclick =
+    closeSidebar;
+}
+
+
+function toggleSidebar() {
+
+  if (!$('sidebar')) return;
+
+  $('sidebar')
+    .classList
+    .toggle('open');
+
+  if ($('sidebarBackdrop')) {
+
+    $('sidebarBackdrop')
+      .classList
+      .toggle('show');
+  }
+}
+
+
+function closeSidebar() {
+
+  if ($('sidebar')) {
+
+    $('sidebar')
+      .classList
+      .remove('open');
+  }
+
+  if ($('sidebarBackdrop')) {
+
+    $('sidebarBackdrop')
+      .classList
+      .remove('show');
+  }
+}
+
+
+/* =========================================================
+   TOAST
+========================================================= */
+
+function toast(message) {
+
+  if (!$('toast')) {
+
+    alert(message);
+
+    return;
+  }
+
+  $('toast').textContent =
+    message;
+
+  $('toast')
+    .classList
+    .add('show');
+
+  clearTimeout(
+    window.__toastTimer
+  );
+
+  window.__toastTimer =
+    setTimeout(
+      () =>
+        $('toast')
+          .classList
+          .remove('show'),
+      3200
+    );
+}
+
+
+/* =========================================================
+   PASSWORD SHOW / HIDE
+========================================================= */
+
+const togglePassword =
+  $('togglePassword');
+
+if (togglePassword) {
+
+  togglePassword.onclick =
+    () => {
+
+      const p =
+        $('password');
+
+      if (!p) return;
+
+      const on =
+        p.type === 'password';
+
+      p.type =
+        on
+          ? 'text'
+          : 'password';
+
+      togglePassword.textContent =
+        on
+          ? 'Hide'
+          : 'Show';
+    };
+}
+
+
+/* =========================================================
+   CLEAR LOGIN
+========================================================= */
+
+const clearLogin =
+  $('clearLogin');
+
+if (clearLogin) {
+
+  clearLogin.onclick =
+    () => {
+
+      if ($('username')) {
+        $('username').value = '';
+      }
+
+      if ($('password')) {
+        $('password').value = '';
+      }
+
+      if ($('error')) {
+        $('error').hidden = true;
+      }
+
+      if ($('username')) {
+        $('username').focus();
+      }
+    };
+}
+
+
+/* =========================================================
+   GLOBAL ESCAPE KEY
+========================================================= */
+
+document.addEventListener(
+  'keydown',
+  e => {
+
+    if (
+      e.key === 'Escape'
+    ) {
+
+      if (
+        $('modal') &&
+        !$('modal').hidden
+      ) {
+
+        closeModal();
+
+      } else {
+
+        closeSidebar();
+
+      }
+    }
+  }
+);
+
+
+/* =========================================================
+   START APPLICATION
+========================================================= */
+
+boot();
+  </script>
 </body>
 </html>
